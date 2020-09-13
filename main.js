@@ -18,6 +18,8 @@ class PixelIt extends utils.Adapter {
     }
 
     async onReady() {
+        let _adapter = this;
+
         // Get Config
         const _pixelItAddress = this.config.address;
 
@@ -27,20 +29,10 @@ class PixelIt extends utils.Adapter {
             return;
         }
 
-        CreateDataPoints(this);
+        await CreateInfoDataPoints(this);
+        await CreateSensorDataPoints(this);
 
-        wsClient = new WebSocket('ws://' + _pixelItAddress + ':81/dash');
-        let _adapter = this;
-        wsClient.on('message', function incoming(data) {
-            let msgObj = JSON.parse(data);
-            if (msgObj.ipAddress !== 'undefined') {
-                _adapter.setStateAsync('config.ip', {
-                    val: msgObj.ipAddress,
-                    ack: true
-                });
-            }
-            console.log(data);
-        });
+        WebSocketConnect(_pixelItAddress, _adapter);
     }
 
     onUnload(callback) {
@@ -52,7 +44,135 @@ class PixelIt extends utils.Adapter {
     }
 }
 
-async function CreateDataPoints(adapter) {
+function WebSocketConnect(pixelItAddress, adapter) {
+    wsClient = new WebSocket('ws://' + pixelItAddress + ':81/dash');
+
+    wsClient.on('open', function open() {
+        WsHeartBeat();
+    });
+
+    wsClient.on('message', function incoming(data) {
+        let msgObj = JSON.parse(data);
+
+        SetInfoDataPoints(adapter, msgObj);
+        SetSensorDataPoints(adapter, msgObj);
+    });
+
+    wsClient.onclose = function (e) {
+        setTimeout(function () {
+            WebSocketConnect();
+        }, 1000);
+    };
+
+    wsClient.onerror = function (err) {
+        wsClient.close();
+    };
+}
+
+function WsHeartBeat() {
+    wsClient.send('ping');
+    setTimeout(function () {
+        WsHeartBeat();
+    }, 1000);
+}
+
+function SetSensorDataPoints(adapter, msgObj) {
+    if (msgObj.lux) {
+        adapter.setStateAsync('sensor.luminance', {
+            val: msgObj.lux,
+            ack: true
+        });
+    }
+
+    if (msgObj.humidity) {
+        adapter.setStateAsync('sensor.humidity', {
+            val: msgObj.humidity,
+            ack: true
+        });
+    }
+
+    if (msgObj.temperature) {
+        adapter.setStateAsync('sensor.temperature', {
+            val: msgObj.temperature,
+            ack: true
+        });
+    }
+}
+
+function SetInfoDataPoints(adapter, msgObj) {
+    if (msgObj.ipAddress) {
+        adapter.setStateAsync('info.ip', {
+            val: msgObj.ipAddress,
+            ack: true
+        });
+    }
+
+    if (msgObj.pixelitVersion) {
+        adapter.setStateAsync('info.version', {
+            val: msgObj.pixelitVersion,
+            ack: true
+        });
+    }
+
+    if (msgObj.sketchSize) {
+        adapter.setStateAsync('info.sketchsize', {
+            val: msgObj.sketchSize,
+            ack: true
+        });
+    }
+
+
+    if (msgObj.freeSketchSpace) {
+        adapter.setStateAsync('info.freesketchspace', {
+            val: msgObj.freeSketchSpace,
+            ack: true
+        });
+    }
+
+    if (msgObj.wifiRSSI) {
+        adapter.setStateAsync('info.wifirssi', {
+            val: msgObj.wifiRSSI,
+            ack: true
+        });
+    }
+
+    if (msgObj.wifiQuality) {
+        adapter.setStateAsync('info.wifiquality', {
+            val: msgObj.wifiQuality,
+            ack: true
+        });
+    }
+
+    if (msgObj.wifiSSID) {
+        adapter.setStateAsync('info.wifissid', {
+            val: msgObj.wifiSSID,
+            ack: true
+        });
+    }
+
+    if (msgObj.freeHeap) {
+        adapter.setStateAsync('info.freeheap', {
+            val: msgObj.freeHeap,
+            ack: true
+        });
+    }
+
+    if (msgObj.cpuFreqMHz) {
+        adapter.setStateAsync('info.cpufreq', {
+            val: msgObj.cpuFreqMHz,
+            ack: true
+        });
+    }
+
+    if (msgObj.chipID) {
+        adapter.setStateAsync('info.chipid', {
+            val: msgObj.chipID,
+            ack: true
+        });
+    }
+}
+
+async function CreateInfoDataPoints(adapter) {
 
     await adapter.setObjectNotExistsAsync('info.ip', {
         type: 'state',
@@ -82,7 +202,7 @@ async function CreateDataPoints(adapter) {
         type: 'state',
         common: {
             name: 'Sketch Size',
-            type: 'string',
+            type: 'number',
             role: '',
             read: true,
             write: false,
@@ -94,7 +214,7 @@ async function CreateDataPoints(adapter) {
         type: 'state',
         common: {
             name: 'Free Sketch Space',
-            type: 'string',
+            type: 'number',
             role: '',
             read: true,
             write: false,
@@ -106,7 +226,7 @@ async function CreateDataPoints(adapter) {
         type: 'state',
         common: {
             name: 'Wifi RSSI',
-            type: 'string',
+            type: 'number',
             role: '',
             read: true,
             write: false,
@@ -142,7 +262,7 @@ async function CreateDataPoints(adapter) {
         type: 'state',
         common: {
             name: 'Free Heap',
-            type: 'string',
+            type: 'number',
             role: '',
             read: true,
             write: false,
@@ -165,9 +285,10 @@ async function CreateDataPoints(adapter) {
     await adapter.setObjectNotExistsAsync('info.cpufreq', {
         type: 'state',
         common: {
-            name: 'CPU-Freq (MHz)',
-            type: 'string',
+            name: 'CPU-Freq',
+            type: 'number',
             role: '',
+            unit: 'MHz',
             read: true,
             write: false,
         },
@@ -175,6 +296,49 @@ async function CreateDataPoints(adapter) {
     });
 }
 
+async function CreateSensorDataPoints(adapter) {
+
+    await adapter.setObjectNotExistsAsync('sensor.luminance', {
+        type: 'state',
+        common: {
+            name: 'Luminance (Lux)',
+            type: 'number',
+            role: 'value.brightness',
+            unit: 'lux',
+            read: true,
+            write: false,
+        },
+        native: {},
+    });
+
+    await adapter.setObjectNotExistsAsync('sensor.humidity', {
+        type: 'state',
+        common: {
+            name: 'Humidity',
+            type: 'number',
+            role: 'value.humidity',
+            unit: '%',
+            min: 0,
+            max: 100,
+            read: true,
+            write: false,
+        },
+        native: {},
+    });
+
+    await adapter.setObjectNotExistsAsync('sensor.temperature', {
+        type: 'state',
+        common: {
+            name: 'Temperature (°C)',
+            type: 'number',
+            role: 'value.temperature',
+            unit: '°C',
+            read: true,
+            write: false,
+        },
+        native: {},
+    });
+}
 
 if (module.parent) {
     module.exports = (options) => new PixelIt(options);
