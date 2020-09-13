@@ -1,25 +1,20 @@
-![Logo](admin/seq.png)
-# ioBroker.seq
+![Logo](admin/pixelit.png)
+# ioBroker.pixelit
 
-[![NPM version](http://img.shields.io/npm/v/iobroker.seq.svg)](https://www.npmjs.com/package/iobroker.seq)
-[![Downloads](https://img.shields.io/npm/dm/iobroker.seq.svg)](https://www.npmjs.com/package/iobroker.seq)
-![Number of Installations (latest)](http://iobroker.live/badges/seq-installed.svg)
-![Number of Installations (stable)](http://iobroker.live/badges/seq-stable.svg)
-[![Dependency Status](https://img.shields.io/david/o0shojo0o/iobroker.seq.svg)](https://david-dm.org/o0shojo0o/iobroker.seq)
-[![Known Vulnerabilities](https://snyk.io/test/github/o0shojo0o/ioBroker.seq/badge.svg)](https://snyk.io/test/github/o0shojo0o/ioBroker.seq)
+[![NPM version](http://img.shields.io/npm/v/iobroker.pixelit.svg)](https://www.npmjs.com/package/iobroker.pixelit)
+[![Downloads](https://img.shields.io/npm/dm/iobroker.pixelit.svg)](https://www.npmjs.com/package/iobroker.pixelit)
+![Number of Installations (latest)](http://iobroker.live/badges/pixelit-installed.svg)
+![Number of Installations (stable)](http://iobroker.live/badges/pixelit-stable.svg)
+[![Dependency Status](https://img.shields.io/david/o0shojo0o/iobroker.pixelit.svg)](https://david-dm.org/o0shojo0o/iobroker.pixelit)
+[![Known Vulnerabilities](https://snyk.io/test/github/o0shojo0o/ioBroker.pixelit/badge.svg)](https://snyk.io/test/github/o0shojo0o/ioBroker.pixelit)
 
-[![NPM](https://nodei.co/npm/iobroker.seq.png?downloads=true)](https://nodei.co/npm/iobroker.seq/)
+[![NPM](https://nodei.co/npm/iobroker.pixelit.png?downloads=true)](https://nodei.co/npm/iobroker.pixelit/)
 
-## Seq adapter for ioBroker
+## PixelIt adapter for ioBroker
 
-This adapter allows you to push your ioBroker log into the system of [Seq](https://datalust.co/seq)
+
 
 ## Configuration
-
-1. Create a new instance of the adapter
-2. Fill the URL/IP and port of the [Seq](https://datalust.co/seq) instance
-3. Specify which log events you want to push to [Seq](https://datalust.co/seq)
-4. Save the settings
 
 ## Changelog
 
