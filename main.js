@@ -40,6 +40,7 @@ class PixelIt extends utils.Adapter {
 
     onUnload(callback) {
         try {
+            clearTimeout(wsTimeout);
             callback();
         } catch (ex) {
             callback();
@@ -50,31 +51,31 @@ class PixelIt extends utils.Adapter {
 function WebSocketConnect(pixelItAddress, adapter) {
     wsClient = new WebSocket('ws://' + pixelItAddress + ':81/dash');
 
-    wsClient.on('open', function (e) {
+    wsClient.on('open', function () {
         WsHeartBeat();
     });
 
     wsClient.on('message', function (data) {
-        let msgObj = JSON.parse(data);
         WsHeartBeat();
+        let msgObj = JSON.parse(data);
         SetInfoDataPoints(adapter, msgObj);
         SetSensorDataPoints(adapter, msgObj);
     });
 
-    wsClient.on('close', function (e) {
+    wsClient.on('close', function () {
         setTimeout(function () {
             WebSocketConnect();
         }, 1000);
     });
 
-    wsClient.on('error', function (e) {
+    wsClient.on('error', function () {
         wsClient.close();
     });
 }
 
 function WsHeartBeat() {
     clearTimeout(wsTimeout);
-    wsTimeout = setTimeout(function (e) {
+    wsTimeout = setTimeout(function () {
         wsClient.close();
     }, 10000);
 }
