@@ -46,13 +46,15 @@
       "ioBroker",
       "template",
       "Smart Home",
-      "home automation"
+      "home automation",
+      "pixel it",
+      "pixelit"
     ],
     "logTransporter": true,
     "license": "MIT",
     "platform": "Javascript/Node.js",
     "main": "main.js",
-    "icon": "PixelIt.png",
+    "icon": "pixelit.png",
     "enabled": true,
     "extIcon": "https://raw.githubusercontent.com/o0shojo0o/ioBroker.pixelit/master/admin/pixelit.png",
     "readme": "https://github.com/o0shojo0o/ioBroker.pixelit/blob/master/README.md",
