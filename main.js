@@ -58,15 +58,15 @@ function WebSocketConnect(pixelItAddress, adapter) {
         SetSensorDataPoints(adapter, msgObj);
     });
 
-    wsClient.onclose = function (e) {
+    wsClient.on('open', function (e) {
         setTimeout(function () {
             WebSocketConnect();
         }, 1000);
-    };
+    });
 
-    wsClient.onerror = function (err) {
+    wsClient.on('error', function (err) {
         wsClient.close();
-    };
+    });
 }
 
 function WsHeartBeat() {
