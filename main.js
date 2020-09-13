@@ -2,8 +2,11 @@
 
 const utils = require('@iobroker/adapter-core');
 const WebSocket = require('ws');
-let wsClient;
 const adapterName = require('./package.json').name.split('.').pop();
+
+let wsClient;
+let wsTimeout;
+
 
 class PixelIt extends utils.Adapter {
 
@@ -53,7 +56,7 @@ function WebSocketConnect(pixelItAddress, adapter) {
 
     wsClient.on('message', function incoming(data) {
         let msgObj = JSON.parse(data);
-
+        WsHeartBeat();
         SetInfoDataPoints(adapter, msgObj);
         SetSensorDataPoints(adapter, msgObj);
     });
@@ -70,10 +73,10 @@ function WebSocketConnect(pixelItAddress, adapter) {
 }
 
 function WsHeartBeat() {
-    wsClient.send('ping');
-    setTimeout(function () {
-        WsHeartBeat();
-    }, 1000);
+    clearTimeout(wsClient);
+    wsTimeout = setTimeout(function () {
+        wsClient.close();
+    }, 10000);
 }
 
 function SetSensorDataPoints(adapter, msgObj) {
