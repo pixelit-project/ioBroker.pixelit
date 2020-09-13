@@ -54,7 +54,7 @@
     "main": "main.js",
     "icon": "PixelIt.png",
     "enabled": true,
-    "extIcon": "https://raw.githubusercontent.com/o0shojo0o/ioBroker.pixelit/master/admin/PixelIt.png",
+    "extIcon": "https://raw.githubusercontent.com/o0shojo0o/ioBroker.pixelit/master/admin/pixelit.png",
     "readme": "https://github.com/o0shojo0o/ioBroker.pixelit/blob/master/README.md",
     "loglevel": "info",
     "mode": "daemon",
