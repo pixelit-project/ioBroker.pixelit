@@ -1,0 +1,76 @@
+{
+  "common": {
+    "name": "pixelit",
+    "version": "0.0.1",
+    "news": {
+      "0.0.1": {
+        "en": "initial release",
+        "de": "Erstveröffentlichung",
+        "ru": "Начальная версия",
+        "pt": "lançamento inicial",
+        "nl": "Eerste uitgave",
+        "fr": "Première version",
+        "it": "Versione iniziale",
+        "es": "Versión inicial",
+        "pl": "Pierwsze wydanie",
+        "zh-cn": "首次出版"
+      }
+    },
+    "title": "PixelIt",
+    "titleLang": {
+      "en": "PixelIt",
+      "de": "PixelIt",
+      "ru": "PixelIt",
+      "pt": "PixelIt",
+      "nl": "PixelIt",
+      "fr": "PixelIt",
+      "it": "PixelIt",
+      "es": "PixelIt",
+      "pl": "PixelIt"
+    },
+    "desc": {
+      "en": "PixelIt",
+      "de": "PixelIt",
+      "ru": "PixelIt",
+      "pt": "PixelIt",
+      "nl": "PixelIt",
+      "fr": "PixelIt",
+      "it": "PixelIt",
+      "es": "PixelIt",
+      "pl": "PixelIt"
+    },
+    "authors": [
+      "Dennis Hinzpeter <info@bastelbunker.de>"
+    ],
+    "keywords": [
+      "ioBroker",
+      "template",
+      "Smart Home",
+      "home automation"
+    ],
+    "logTransporter": true,
+    "license": "MIT",
+    "platform": "Javascript/Node.js",
+    "main": "main.js",
+    "icon": "PixelIt.png",
+    "enabled": true,
+    "extIcon": "https://raw.githubusercontent.com/o0shojo0o/ioBroker.pixelit/master/admin/PixelIt.png",
+    "readme": "https://github.com/o0shojo0o/ioBroker.pixelit/blob/master/README.md",
+    "loglevel": "info",
+    "mode": "daemon",
+    "type": "utility",
+    "compact": true,
+    "connectionType": "local",
+    "dataSource": "push",
+    "materialize": true,
+    "dependencies": [{
+      "js-controller": ">=1.4.2"
+    }],
+    "installedFrom": "https://github.com/o0shojo0o/ioBroker.pixelit/tarball/c9e111ede3984df89de5bf8ff9911070bca94bf5"
+  },
+  "native": {
+    "address": ""
+  },
+  "objects": [],
+  "instanceObjects": []
+}
