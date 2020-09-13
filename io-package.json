@@ -67,8 +67,7 @@
     "materialize": true,
     "dependencies": [{
       "js-controller": ">=1.4.2"
-    }],
-    "installedFrom": "https://github.com/o0shojo0o/ioBroker.pixelit/tarball/c9e111ede3984df89de5bf8ff9911070bca94bf5"
+    }],    
   },
   "native": {
     "address": ""
