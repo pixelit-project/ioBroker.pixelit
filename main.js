@@ -58,7 +58,7 @@ function WebSocketConnect(pixelItAddress, adapter) {
         SetSensorDataPoints(adapter, msgObj);
     });
 
-    wsClient.on('open', function (e) {
+    wsClient.on('close', function (e) {
         setTimeout(function () {
             WebSocketConnect();
         }, 1000);
