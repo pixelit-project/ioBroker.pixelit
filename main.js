@@ -50,11 +50,11 @@ class PixelIt extends utils.Adapter {
 function WebSocketConnect(pixelItAddress, adapter) {
     wsClient = new WebSocket('ws://' + pixelItAddress + ':81/dash');
 
-    wsClient.on('open', function open() {
+    wsClient.on('open', function (e) {
         WsHeartBeat();
     });
 
-    wsClient.on('message', function incoming(data) {
+    wsClient.on('message', function (data) {
         let msgObj = JSON.parse(data);
         WsHeartBeat();
         SetInfoDataPoints(adapter, msgObj);
@@ -67,14 +67,14 @@ function WebSocketConnect(pixelItAddress, adapter) {
         }, 1000);
     });
 
-    wsClient.on('error', function (err) {
+    wsClient.on('error', function (e) {
         wsClient.close();
     });
 }
 
 function WsHeartBeat() {
-    clearTimeout(wsClient);
-    wsTimeout = setTimeout(function () {
+    clearTimeout(wsTimeout);
+    wsTimeout = setTimeout(function (e) {
         wsClient.close();
     }, 10000);
 }
