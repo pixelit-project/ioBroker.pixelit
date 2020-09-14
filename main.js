@@ -1,13 +1,18 @@
 'use strict';
 
 const utils = require('@iobroker/adapter-core');
-const WebSocket = require('ws');
+const axios = require('axios');
 const adapterName = require('./package.json').name.split('.').pop();
 const infoDataPoints = require('./lib/infoDataPoints').infoDataPoints;
 const sensorDataPoints = require('./lib/sensorDataPoints').sensorDataPoints;
+const rootDataPoints = require('./lib/rootDataPoints').rootDataPoints;
 
-let wsClient;
-let wsTimeout;
+let pixelItAddress;
+let timerInterval;
+let requestTimout;
+let adapter;
+let adapterOnline = false;
+
 
 class PixelIt extends utils.Adapter {
 
@@ -22,16 +27,22 @@ class PixelIt extends utils.Adapter {
     }
 
     async onReady() {
-        let _adapter = this;
+        adapter = this;
 
         // Get Config
-        const _pixelItAddress = this.config.address;
+        pixelItAddress = this.config.address;
+        timerInterval = 5000;
 
         // Check Server address
         if (!_pixelItAddress || _pixelItAddress === '') {
             this.log.warn('PixelIt address is not a valid, please check your settings!')
             return;
         }
+
+        // Create Root DataPoints       
+        for (let _key in rootDataPoints) {
+            await this.setObjectNotExistsAsync(rootDataPoints[_key].pointName, rootDataPoints[_key].point);
+        };
 
         // Create Info DataPoints   
         for (let _key in infoDataPoints) {
@@ -43,12 +54,12 @@ class PixelIt extends utils.Adapter {
             await this.setObjectNotExistsAsync(sensorDataPoints[_key].pointName, sensorDataPoints[_key].point);
         };
 
-        WebSocketConnect(_pixelItAddress, _adapter);
+        RequestAndWriteData();
     }
 
     onUnload(callback) {
         try {
-            clearTimeout(wsTimeout);
+            clearTimeout(requestTimout);
             callback();
         } catch (ex) {
             callback();
@@ -56,49 +67,71 @@ class PixelIt extends utils.Adapter {
     }
 }
 
-function WebSocketConnect(pixelItAddress, adapter) {
-    wsClient = new WebSocket('ws://' + pixelItAddress + ':81/dash');
+function RequestAndWriteData() {
+    axios.get('http://' + pixelItAddress + '/api/matrixinfo')
+        .then(function (response) {
+            adapterOnline = true;
+            SetDataPoints(adapter, response.data);
+        })
+        .catch(function (error) {
+            adapterOnline = false;
+        }).then(function () {
+            SetDataPoints(adapter, {
+                adapterOnline: adapterOnline
+            });
+        });
 
-    wsClient.on('open', function () {
-        WsHeartBeat();
-    });
+    axios.get('http://' + pixelItAddress + '/api/dhtsensor')
+        .then(function (response) {
+            adapterOnline = true;
+            SetDataPoints(adapter, response.data);
+        })
+        .catch(function (error) {
+            adapterOnline = false;
+        }).then(function () {
+            requestTimout = setTimeout(RequestAndWriteData, timerInterval);
+            SetDataPoints(adapter, {
+                adapterOnline: adapterOnline
+            });
+        });
 
-    wsClient.on('message', function (data) {
-        WsHeartBeat();
-        let msgObj = JSON.parse(data);
+    axios.get('http://' + pixelItAddress + '/api/luxsensor')
+        .then(function (response) {
+            adapterOnline = true;
+            SetDataPoints(adapter, response.data);
+        })
+        .catch(function (error) {
+            adapterOnline = false;
+        }).then(function () {
+            requestTimout = setTimeout(RequestAndWriteData, timerInterval);
+            SetDataPoints(adapter, {
+                adapterOnline: adapterOnline
+            });
+        });
+}
 
-        for (let _key in msgObj) {
-            let _dataPoint = infoDataPoints.find(x => x.msgObjName === _key);
+function SetDataPoints(adapter, msgObj) {
+    for (let _key in msgObj) {
+        let _dataPoint = infoDataPoints.find(x => x.msgObjName === _key);
 
-            if (!_dataPoint) {
-                _dataPoint = sensorDataPoints.find(x => x.msgObjName === _key);
-            }
+        if (!_dataPoint) {
+            _dataPoint = sensorDataPoints.find(x => x.msgObjName === _key);
+        }
 
-            if (_dataPoint) {
+        if (!_dataPoint) {
+            _dataPoint = rootDataPoints.find(x => x.msgObjName === _key);
+        }
+
+        if (_dataPoint) {
+            let oldState = adapter.getState(_dataPoint.pointName);
+            if (oldState !== msgObj[_key]) {
                 adapter.setStateAsync(_dataPoint.pointName, {
                     val: msgObj[_key],
                     ack: true
                 });
             }
-        };
-    });
-
-    wsClient.on('close', function () {
-        setTimeout(function () {
-            WebSocketConnect();
-        }, 1000);
-    });
-
-    wsClient.on('error', function () {
-        wsClient.close();
-    });
-}
-
-function WsHeartBeat() {
-    clearTimeout(wsTimeout);
-    wsTimeout = setTimeout(function () {
-        wsClient.close();
-    }, 10000);
+        }
+    }
 }
 
 if (module.parent) {
