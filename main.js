@@ -77,7 +77,7 @@ function WebSocketConnect(pixelItAddress, adapter) {
                 _dataPoint = sensorDataPoints.find(x => x.msgObjName === x);
             }
 
-            if (!_dataPoint) {
+            if (_dataPoint) {
                 adapter.setStateAsync(_dataPoint.pointName, {
                     val: msgObj[x],
                     ack: true
