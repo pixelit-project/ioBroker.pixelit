@@ -49,9 +49,9 @@ class PixelIt extends utils.Adapter {
             await this.setObjectNotExistsAsync(sensorDataPoints[_key].pointName, sensorDataPoints[_key].point);
         };
 
-        this.subscribeStates()
+        this.subscribeStates('message');
 
-        RequestAndWriteData();
+        this.RequestAndWriteData();
     }
 
     onUnload(callback) {
@@ -136,7 +136,7 @@ class PixelIt extends utils.Adapter {
         });
 
         clearTimeout(requestTimout);
-        requestTimout = setTimeout(RequestAndWriteData, timerInterval);
+        requestTimout = setTimeout(this.RequestAndWriteData, timerInterval);
     }
 
     async SetDataPoints(msgObj) {
