@@ -11,7 +11,6 @@ let pixelItAddress;
 let timerInterval;
 let requestTimout;
 let adapter;
-let adapterOnline = false;
 
 
 class PixelIt extends utils.Adapter {
@@ -68,6 +67,8 @@ class PixelIt extends utils.Adapter {
 }
 
 async function RequestAndWriteData() {
+    let adapterOnline = true;
+
     let response = await axios.get('http://' + pixelItAddress + '/api/matrixinfo')
         .catch(function (error) {
             adapterOnline = false;
@@ -97,7 +98,7 @@ async function RequestAndWriteData() {
     requestTimout = setTimeout(RequestAndWriteData, timerInterval);
 }
 
-function SetDataPoints(adapter, msgObj) {
+async function SetDataPoints(adapter, msgObj) {
     for (let _key in msgObj) {
         let _dataPoint = infoDataPoints.find(x => x.msgObjName === _key);
 
@@ -110,7 +111,8 @@ function SetDataPoints(adapter, msgObj) {
         }
 
         if (_dataPoint) {
-            let oldState = adapter.getState(_dataPoint.pointName);
+            let oldState = await adapter.getState(_dataPoint.pointName);
+            this.log.debug(JSON.stringify(oldState));
             if (oldState !== msgObj[_key]) {
                 adapter.setStateAsync(_dataPoint.pointName, {
                     val: msgObj[_key],
