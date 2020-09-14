@@ -69,17 +69,17 @@ function WebSocketConnect(pixelItAddress, adapter) {
         WsHeartBeat();
         let msgObj = JSON.parse(data);
 
-        Object.keys(msgObj).forEach(x => {
+        Object.keys(msgObj).forEach(_key => {
 
-            let _dataPoint = infoDataPoints.find(x => x.msgObjName === x);
+            let _dataPoint = infoDataPoints.find(x => x.msgObjName === _key);
 
             if (!_dataPoint) {
-                _dataPoint = sensorDataPoints.find(x => x.msgObjName === x);
+                _dataPoint = sensorDataPoints.find(x => x.msgObjName === _key);
             }
 
             if (_dataPoint) {
                 adapter.setStateAsync(_dataPoint.pointName, {
-                    val: msgObj[x],
+                    val: msgObj[_key],
                     ack: true
                 });
             }
