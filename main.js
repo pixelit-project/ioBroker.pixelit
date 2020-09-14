@@ -10,8 +10,6 @@ const rootDataPoints = require('./lib/rootDataPoints').rootDataPoints;
 let pixelItAddress;
 let timerInterval;
 let requestTimout;
-let adapter;
-
 
 class PixelIt extends utils.Adapter {
 
@@ -26,8 +24,6 @@ class PixelIt extends utils.Adapter {
     }
 
     async onReady() {
-        adapter = this;
-
         // Get Config
         pixelItAddress = this.config.address;
         timerInterval = 5000;
@@ -53,6 +49,8 @@ class PixelIt extends utils.Adapter {
             await this.setObjectNotExistsAsync(sensorDataPoints[_key].pointName, sensorDataPoints[_key].point);
         };
 
+        this.subscribeStates()
+
         RequestAndWriteData();
     }
 
@@ -64,67 +62,101 @@ class PixelIt extends utils.Adapter {
             callback();
         }
     }
-}
 
-async function RequestAndWriteData() {
-    let adapterOnline = true;
+    onStateChange(id, state) {
+        this.log.debug(`stateID ${id} changed: ${state.val} (ack = ${state.ack})`);
 
-    await axios.get('http://' + pixelItAddress + '/api/matrixinfo', {
-            timeout: 1000
-        }).then(function (response) {
-            SetDataPoints(adapter, response.data);
-        })
-        .catch(function (error) {
-            adapterOnline = false;
-        });
-
-
-
-    await axios.get('http://' + pixelItAddress + '/api/dhtsensor', {
-            timeout: 1000
-        }).then(function (response) {
-            SetDataPoints(adapter, response.data);
-        })
-        .catch(function (error) {
-            adapterOnline = false;
-        });
-
-
-
-    await axios.get('http://' + pixelItAddress + '/api/luxsensor', {
-            timeout: 1000
-        }).then(function (response) {
-            SetDataPoints(adapter, response.data);
-        })
-        .catch(function (error) {
-            adapterOnline = false;
-        });
-
-    SetDataPoints(adapter, {
-        adapterOnline: adapterOnline
-    });
-
-    clearTimeout(requestTimout);
-    requestTimout = setTimeout(RequestAndWriteData, timerInterval);
-}
-
-async function SetDataPoints(adapter, msgObj) {
-    for (let _key in msgObj) {
-        let _dataPoint = infoDataPoints.find(x => x.msgObjName === _key);
-
-        if (!_dataPoint) {
-            _dataPoint = sensorDataPoints.find(x => x.msgObjName === _key);
-        }
-
-        if (!_dataPoint) {
-            _dataPoint = rootDataPoints.find(x => x.msgObjName === _key);
-        }
-
-        if (_dataPoint) {
-            adapter.setStateAsync(_dataPoint.pointName, {
-                val: msgObj[_key],
-                ack: true
+        axios.post('http://' + pixelItAddress + '/api/screen', {
+                'text': {
+                    'textString': state.val,
+                    'bigFont': false, // [true | false]
+                    'scrollText': false, // [ true | false | 'auto']
+                    'scrollTextDelay': 20, // [1 - 9999],                    
+                    'centerText': true, // [true | false],
+                    'position': {
+                        'x': 8,
+                        'y': 1
+                    },
+                    'color': {
+                        'r': 255, // [0 - 255]
+                        'g': 255, // [0 - 255]
+                        'b': 255 // [0 - 255]   
+                    }
+                }
+            }, {
+                timeout: 300
+            }).then(function (response) {
+                this.setStateAsync(id, {
+                    ack: true
+                });
+            })
+            .catch(function (error) {
+                this.setStateAsync(id, {
+                    ack: false
+                });
             });
+    }
+
+    async RequestAndWriteData() {
+        let adapterOnline = true;
+
+        await axios.get('http://' + pixelItAddress + '/api/matrixinfo', {
+                timeout: 300
+            }).then(function (response) {
+                SetDataPoints(response.data);
+            })
+            .catch(function (error) {
+                adapterOnline = false;
+            });
+
+
+
+        await axios.get('http://' + pixelItAddress + '/api/dhtsensor', {
+                timeout: 300
+            }).then(function (response) {
+                SetDataPoints(adapter, response.data);
+            })
+            .catch(function (error) {
+                adapterOnline = false;
+            });
+
+
+
+        await axios.get('http://' + pixelItAddress + '/api/luxsensor', {
+                timeout: 300
+            }).then(function (response) {
+                SetDataPoints(response.data);
+            })
+            .catch(function (error) {
+                adapterOnline = false;
+            });
+
+        SetDataPoints(adapter, {
+            adapterOnline: adapterOnline
+        });
+
+        clearTimeout(requestTimout);
+        requestTimout = setTimeout(RequestAndWriteData, timerInterval);
+    }
+
+    async SetDataPoints(msgObj) {
+        for (let _key in msgObj) {
+            let _dataPoint = infoDataPoints.find(x => x.msgObjName === _key);
+
+            if (!_dataPoint) {
+                _dataPoint = sensorDataPoints.find(x => x.msgObjName === _key);
+            }
+
+            if (!_dataPoint) {
+                _dataPoint = rootDataPoints.find(x => x.msgObjName === _key);
+            }
+
+            if (_dataPoint) {
+                this.setStateAsync(_dataPoint.pointName, {
+                    val: msgObj[_key],
+                    ack: true
+                });
+            }
         }
     }
 }
