@@ -69,32 +69,36 @@ class PixelIt extends utils.Adapter {
 async function RequestAndWriteData() {
     let adapterOnline = true;
 
-    let response = await axios.get('http://' + pixelItAddress + '/api/matrixinfo', {
+    axios.get('http://' + pixelItAddress + '/api/matrixinfo', {
             timeout: 1000
+        }).then(function (response) {
+            SetDataPoints(adapter, response.data);
         })
         .catch(function (error) {
             adapterOnline = false;
         });
 
-    await SetDataPoints(adapter, response.data);
 
-    response = await axios.get('http://' + pixelItAddress + '/api/dhtsensor', {
+
+    axios.get('http://' + pixelItAddress + '/api/dhtsensor', {
             timeout: 1000
+        }).then(function (response) {
+            SetDataPoints(adapter, response.data);
         })
         .catch(function (error) {
             adapterOnline = false;
         });
 
-    await SetDataPoints(adapter, response.data);
 
-    response = await axios.get('http://' + pixelItAddress + '/api/luxsensor', {
+
+    axios.get('http://' + pixelItAddress + '/api/luxsensor', {
             timeout: 1000
+        }).then(function (response) {
+            SetDataPoints(adapter, response.data);
         })
         .catch(function (error) {
             adapterOnline = false;
         });
-
-    await SetDataPoints(adapter, response.data);
 
     SetDataPoints(adapter, {
         adapterOnline: adapterOnline
