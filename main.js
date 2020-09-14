@@ -112,7 +112,7 @@ async function SetDataPoints(adapter, msgObj) {
 
         if (_dataPoint) {
             let oldState = await adapter.getState(_dataPoint.pointName);
-            this.log.debug(JSON.stringify(oldState));
+            adapter.log.debug(JSON.stringify(oldState));
             if (oldState !== msgObj[_key]) {
                 adapter.setStateAsync(_dataPoint.pointName, {
                     val: msgObj[_key],
