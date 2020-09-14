@@ -112,7 +112,7 @@ async function SetDataPoints(adapter, msgObj) {
 
         if (_dataPoint) {
             let oldState = await adapter.getState(_dataPoint.pointName, (err, state) => {
-                return state
+                return state.val;
             });
 
             adapter.log.debug(JSON.stringify(oldState));
