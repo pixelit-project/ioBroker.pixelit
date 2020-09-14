@@ -67,47 +67,34 @@ class PixelIt extends utils.Adapter {
     }
 }
 
-function RequestAndWriteData() {
-    axios.get('http://' + pixelItAddress + '/api/matrixinfo')
-        .then(function (response) {
-            adapterOnline = true;
-            SetDataPoints(adapter, response.data);
-        })
+async function RequestAndWriteData() {
+    let response = await axios.get('http://' + pixelItAddress + '/api/matrixinfo')
         .catch(function (error) {
             adapterOnline = false;
-        }).then(function () {
-            SetDataPoints(adapter, {
-                adapterOnline: adapterOnline
-            });
         });
 
-    axios.get('http://' + pixelItAddress + '/api/dhtsensor')
-        .then(function (response) {
-            adapterOnline = true;
-            SetDataPoints(adapter, response.data);
-        })
+    await SetDataPoints(adapter, response.data);
+
+    response = await axios.get('http://' + pixelItAddress + '/api/dhtsensor')
         .catch(function (error) {
             adapterOnline = false;
-        }).then(function () {
-            requestTimout = setTimeout(RequestAndWriteData, timerInterval);
-            SetDataPoints(adapter, {
-                adapterOnline: adapterOnline
-            });
         });
 
-    axios.get('http://' + pixelItAddress + '/api/luxsensor')
-        .then(function (response) {
-            adapterOnline = true;
-            SetDataPoints(adapter, response.data);
-        })
+    await SetDataPoints(adapter, response.data);
+
+    response = await axios.get('http://' + pixelItAddress + '/api/luxsensor')
         .catch(function (error) {
             adapterOnline = false;
-        }).then(function () {
-            requestTimout = setTimeout(RequestAndWriteData, timerInterval);
-            SetDataPoints(adapter, {
-                adapterOnline: adapterOnline
-            });
         });
+
+    await SetDataPoints(adapter, response.data);
+
+    SetDataPoints(adapter, {
+        adapterOnline: adapterOnline
+    });
+
+    clearTimeout(requestTimout);
+    requestTimout = setTimeout(RequestAndWriteData, timerInterval);
 }
 
 function SetDataPoints(adapter, msgObj) {
