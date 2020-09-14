@@ -114,7 +114,7 @@ class PixelIt extends utils.Adapter {
         await axios.get('http://' + pixelItAddress + '/api/dhtsensor', {
                 timeout: 300
             }).then(function (response) {
-                SetDataPoints(adapter, response.data);
+                SetDataPoints(response.data);
             })
             .catch(function (error) {
                 adapterOnline = false;
@@ -131,7 +131,7 @@ class PixelIt extends utils.Adapter {
                 adapterOnline = false;
             });
 
-        SetDataPoints(adapter, {
+        SetDataPoints({
             adapterOnline: adapterOnline
         });
 
