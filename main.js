@@ -34,7 +34,7 @@ class PixelIt extends utils.Adapter {
         timerInterval = 5000;
 
         // Check Server address
-        if (!_pixelItAddress || _pixelItAddress === '') {
+        if (!pixelItAddress || pixelItAddress === '') {
             this.log.warn('PixelIt address is not a valid, please check your settings!')
             return;
         }
