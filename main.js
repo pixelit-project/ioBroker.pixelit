@@ -3,10 +3,11 @@
 const utils = require('@iobroker/adapter-core');
 const WebSocket = require('ws');
 const adapterName = require('./package.json').name.split('.').pop();
+const infoDataPoints = require('./lib/infoDataPoints').infoDataPoints;
+const sensorDataPoints = require('./lib/sensorDataPoints').sensorDataPoints;
 
 let wsClient;
 let wsTimeout;
-
 
 class PixelIt extends utils.Adapter {
 
@@ -32,8 +33,17 @@ class PixelIt extends utils.Adapter {
             return;
         }
 
-        await CreateInfoDataPoints(this);
-        await CreateSensorDataPoints(this);
+        // Create Info DataPoints
+        infoDataPoints.forEach(x => {
+            await adapter.setObjectNotExistsAsync(x.pointName, x.point);
+        });
+
+        // Create Sensor DataPoints
+        sensorDataPoints.forEach(x => {
+            await adapter.setObjectNotExistsAsync(x.pointName, x.point);
+        });
+
+
 
         WebSocketConnect(_pixelItAddress, _adapter);
     }
@@ -51,31 +61,45 @@ class PixelIt extends utils.Adapter {
 function WebSocketConnect(pixelItAddress, adapter) {
     wsClient = new WebSocket('ws://' + pixelItAddress + ':81/dash');
 
-    wsClient.on('open', function () {
+    wsClient.on('open', function() {
         WsHeartBeat();
     });
 
-    wsClient.on('message', function (data) {
+    wsClient.on('message', function(data) {
         WsHeartBeat();
         let msgObj = JSON.parse(data);
-        SetInfoDataPoints(adapter, msgObj);
-        SetSensorDataPoints(adapter, msgObj);
+
+        Object.keys(msgObj).forEach(x => {
+
+            let _dataPoint = infoDataPoints.find(x => x.msgObjName === x);
+
+            if (!_dataPoint) {
+                _dataPoint = sensorDataPoints.find(x => x.msgObjName === x);
+            }
+
+            if (!_dataPoint) {
+                adapter.setStateAsync(_dataPoint.pointName, {
+                    val: msgObj[x],
+                    ack: true
+                });
+            }
+        });
     });
 
-    wsClient.on('close', function () {
-        setTimeout(function () {
+    wsClient.on('close', function() {
+        setTimeout(function() {
             WebSocketConnect();
         }, 1000);
     });
 
-    wsClient.on('error', function () {
+    wsClient.on('error', function() {
         wsClient.close();
     });
 }
 
 function WsHeartBeat() {
     clearTimeout(wsTimeout);
-    wsTimeout = setTimeout(function () {
+    wsTimeout = setTimeout(function() {
         wsClient.close();
     }, 10000);
 }
@@ -174,174 +198,6 @@ function SetInfoDataPoints(adapter, msgObj) {
             ack: true
         });
     }
-}
-
-async function CreateInfoDataPoints(adapter) {
-
-    await adapter.setObjectNotExistsAsync('info.ip', {
-        type: 'state',
-        common: {
-            name: 'IP-Address',
-            type: 'string',
-            role: 'info.ip',
-            read: true,
-            write: false,
-        },
-        native: {},
-    });
-
-    await adapter.setObjectNotExistsAsync('info.version', {
-        type: 'state',
-        common: {
-            name: 'Version',
-            type: 'string',
-            role: '',
-            read: true,
-            write: false,
-        },
-        native: {},
-    });
-
-    await adapter.setObjectNotExistsAsync('info.sketchsize', {
-        type: 'state',
-        common: {
-            name: 'Sketch Size',
-            type: 'number',
-            role: '',
-            read: true,
-            write: false,
-        },
-        native: {},
-    });
-
-    await adapter.setObjectNotExistsAsync('info.freesketchspace', {
-        type: 'state',
-        common: {
-            name: 'Free Sketch Space',
-            type: 'number',
-            role: '',
-            read: true,
-            write: false,
-        },
-        native: {},
-    });
-
-    await adapter.setObjectNotExistsAsync('info.wifirssi', {
-        type: 'state',
-        common: {
-            name: 'Wifi RSSI',
-            type: 'number',
-            role: '',
-            read: true,
-            write: false,
-        },
-        native: {},
-    });
-
-    await adapter.setObjectNotExistsAsync('info.wifiquality', {
-        type: 'state',
-        common: {
-            name: 'Wifi Quality',
-            type: 'string',
-            role: '',
-            read: true,
-            write: false,
-        },
-        native: {},
-    });
-
-    await adapter.setObjectNotExistsAsync('info.wifissid', {
-        type: 'state',
-        common: {
-            name: 'Wifi SSID',
-            type: 'string',
-            role: '',
-            read: true,
-            write: false,
-        },
-        native: {},
-    });
-
-    await adapter.setObjectNotExistsAsync('info.freeheap', {
-        type: 'state',
-        common: {
-            name: 'Free Heap',
-            type: 'number',
-            role: '',
-            read: true,
-            write: false,
-        },
-        native: {},
-    });
-
-    await adapter.setObjectNotExistsAsync('info.chipid', {
-        type: 'state',
-        common: {
-            name: 'Chip ID',
-            type: 'string',
-            role: '',
-            read: true,
-            write: false,
-        },
-        native: {},
-    });
-
-    await adapter.setObjectNotExistsAsync('info.cpufreq', {
-        type: 'state',
-        common: {
-            name: 'CPU-Freq',
-            type: 'number',
-            role: '',
-            unit: 'MHz',
-            read: true,
-            write: false,
-        },
-        native: {},
-    });
-}
-
-async function CreateSensorDataPoints(adapter) {
-
-    await adapter.setObjectNotExistsAsync('sensor.luminance', {
-        type: 'state',
-        common: {
-            name: 'Luminance (Lux)',
-            type: 'number',
-            role: 'value.brightness',
-            unit: 'lux',
-            read: true,
-            write: false,
-        },
-        native: {},
-    });
-
-    await adapter.setObjectNotExistsAsync('sensor.humidity', {
-        type: 'state',
-        common: {
-            name: 'Humidity',
-            type: 'number',
-            role: 'value.humidity',
-            unit: '%',
-            min: 0,
-            max: 100,
-            read: true,
-            write: false,
-        },
-        native: {},
-    });
-
-    await adapter.setObjectNotExistsAsync('sensor.temperature', {
-        type: 'state',
-        common: {
-            name: 'Temperature (°C)',
-            type: 'number',
-            role: 'value.temperature',
-            unit: '°C',
-            read: true,
-            write: false,
-        },
-        native: {},
-    });
 }
 
 if (module.parent) {
