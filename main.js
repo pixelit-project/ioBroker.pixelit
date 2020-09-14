@@ -21,7 +21,7 @@ class PixelIt extends utils.Adapter {
         this.on('unload', this.onUnload.bind(this));
     }
 
-    onReady() {
+    async onReady() {
         let _adapter = this;
 
         // Get Config
@@ -35,12 +35,12 @@ class PixelIt extends utils.Adapter {
 
         // Create Info DataPoints
         infoDataPoints.forEach(x => {
-            adapter.setObjectNotExistsAsync(x.pointName, x.point);
+            await this.setObjectNotExistsAsync(x.pointName, x.point);
         });
 
         // Create Sensor DataPoints
         sensorDataPoints.forEach(x => {
-            adapter.setObjectNotExistsAsync(x.pointName, x.point);
+            await this.setObjectNotExistsAsync(x.pointName, x.point);
         });
 
 
