@@ -6,7 +6,6 @@
 ![Number of Installations (latest)](http://iobroker.live/badges/pixelit-installed.svg)
 ![Number of Installations (stable)](http://iobroker.live/badges/pixelit-stable.svg)
 [![Dependency Status](https://img.shields.io/david/o0shojo0o/iobroker.pixelit.svg)](https://david-dm.org/o0shojo0o/iobroker.pixelit)
-[![Known Vulnerabilities](https://snyk.io/test/github/o0shojo0o/ioBroker.pixelit/badge.svg)](https://snyk.io/test/github/o0shojo0o/ioBroker.pixelit)
 
 [![NPM](https://nodei.co/npm/iobroker.pixelit.png?downloads=true)](https://nodei.co/npm/iobroker.pixelit/)
 
