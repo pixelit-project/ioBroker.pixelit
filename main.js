@@ -61,44 +61,40 @@ class PixelIt extends utils.Adapter {
     onUnload(callback) {
         try {
             clearTimeout(requestTimout);
+            SetDataPoints({
+                adapterOnline: false
+            });
             callback();
         } catch (ex) {
             callback();
         }
     }
 
-    onStateChange(id, state) {
+    async onStateChange(id, state) {
         this.log.debug(`stateID ${id} changed: ${state.val} (ack = ${state.ack})`);
 
-        axios.post('http://' + pixelItAddress + '/api/screen', {
-                // Test Data!!!!
-                bitmapAnimation: {
-                    data: [
-                        [0, 0, 63384, 65535, 63384, 63384, 0, 0, 0, 65535, 65535, 65535, 63384, 65535, 65535, 0, 0, 63384, 65062, 65507, 65535, 44000, 0, 0, 0, 0, 65062, 65507, 62816, 44000, 55291, 55291, 0, 0, 65062, 65379, 62816, 44000, 0, 61438, 0, 0, 62816, 65252, 62816, 37696, 0, 65535, 0, 0, 54432, 60960, 54432, 37696, 55291, 0, 0, 0, 61438, 61438, 55291, 55291, 0, 0]
-                    ],
-                    animationDelay: 20, // Millisekunden
-                    // [Optional]
-                    rubberbanding: false, // [true | false]
-                    // [Optional]
-                    limitLoops: 0 // < 0 = No Limit >
-                },
-                text: {
-                    textString: state.val,
-                    bigFont: false, // [true | false]
-                    scrollText: 'auto', // [ true | false | 'auto']
-                    scrollTextDelay: 50, // [1 - 9999],                    
-                    centerText: false, // [true | false],
-                    position: {
-                        x: 8,
-                        y: 1
-                    },
-                    color: {
-                        r: 255, // [0 - 255]
-                        g: 255, // [0 - 255]
-                        b: 255 // [0 - 255]   
-                    }
-                }
-            }, {
+        let inputArray = state.val.split(';');
+
+        // 1 = text, 2 = text + text color, 3 = text + text color + image
+        let _countElements = inputArray.length;
+
+        this.log.debug(`_countElements ${_countElements}`);
+
+        let _data;
+
+        if (_countElements === 1) {
+            _data = await Text(inputArray[0]);
+        }
+        if (_countElements >= 2) {
+            _data = await Text(inputArray[0], inputArray[1]);
+        }
+        if (_countElements >= 3) {
+            _data += await BMP(inputArray[2]);
+        }
+
+        this.log.debug(`_data ${_data}`);
+
+        axios.post('http://' + pixelItAddress + '/api/screen', JSON.parse('{' + _data + '}'), {
                 timeout: 1000
             }).then(function (response) {
                 // adapter.setStateAsync(id, {
@@ -174,6 +170,54 @@ function SetDataPoints(msgObj) {
             });
         }
     }
+}
+
+async function Text(text, rgb) {
+    if (rgb) {
+        rgb = rgb.split(',');
+    } else {
+        rgb = [255, 255, 255];
+    }
+
+    return `"text": { 
+        "textString": "${text}", 
+        "bigFont": false,
+        "scrollText": "auto", 
+        "scrollTextDelay": 50,                   
+        "centerText": false, 
+        "position": {
+            "x": 8,
+            "y": 1
+        },
+        "color": {
+            "r": ${rgb[0]}, 
+            "g": ${rgb[1]},
+            "b": ${rgb[2]} 
+        }
+    }`;
+}
+
+async function BMP(id) {
+    let webBmp = '[64512,0,0,0,0,0,0,64512,0,64512,0,0,0,0,64512,0,0,0,64512,0,0,64512,0,0,0,0,0,64512,64512,0,0,0,0,0,0,64512,64512,0,0,0,0,0,64512,0,0,64512,0,0,0,64512,0,0,0,0,64512,0,64512,0,0,0,0,0,0,64512]';
+
+    await axios.get('https://pixelit.bastelbunker.de/API/GetBMPByID/' + id, {
+            timeout: 1000,
+            headers: {
+                'User-Agent': 'ioBroker_PixelIt'
+            }
+        }).then(function (response) {
+            if (response.data && response.data.id && response.data.id != 0) {
+                webBmp = response.data.rgB565Array;
+            }
+        })
+        .catch(function (error) {});
+
+    return `,"bitmapAnimation": {
+        "data": [${webBmp}],
+        "animationDelay": 200,  
+        "rubberbanding": false, 
+        "limitLoops": 0
+    }`;
 }
 
 if (module.parent) {
