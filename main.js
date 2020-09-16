@@ -11,6 +11,10 @@ let adapter;
 let pixelItAddress;
 let timerInterval;
 let requestTimout;
+// Set axios Timeout 
+let axiosConfigToPixelIt = {
+    timeout: 1000
+};
 
 class PixelIt extends utils.Adapter {
 
@@ -99,9 +103,7 @@ class PixelIt extends utils.Adapter {
         this.log.debug(`_data ${_data}`);
 
         try {
-            await axios.post('http://' + pixelItAddress + '/api/screen', JSON.parse('{' + _data + '}'), {
-                timeout: 1000
-            });
+            await axios.post('http://' + pixelItAddress + '/api/screen', JSON.parse('{' + _data + '}'), axiosConfigToPixelIt);
 
             adapter.setStateAsync(id, {
                 ack: true
@@ -112,29 +114,27 @@ class PixelIt extends utils.Adapter {
 }
 
 async function RequestAndWriteData() {
-    let adapterOnline = true;
+    let _adapterOnline = true;
+
     try {
-        let _matrixinfo = await axios.get('http://' + pixelItAddress + '/api/matrixinfo', {
-            timeout: 1000
-        });
+        // Get MatrixInfo
+        let _matrixinfo = await axios.get('http://' + pixelItAddress + '/api/matrixinfo', axiosConfigToPixelIt);
+        // Get DHTSensor
+        let _dhtsensor = await axios.get('http://' + pixelItAddress + '/api/dhtsensor', axiosConfigToPixelIt);
+        // Get LuxSensor
+        let _luxsensor = await axios.get('http://' + pixelItAddress + '/api/luxsensor', axiosConfigToPixelIt);
 
-        let _dhtsensor = await axios.get('http://' + pixelItAddress + '/api/dhtsensor', {
-            timeout: 1000
-        });
-
-        let _luxsensor = await axios.get('http://' + pixelItAddress + '/api/luxsensor', {
-            timeout: 1000
-        });
-
+        // Set DataPoints
         SetDataPoints(_matrixinfo.data);
         SetDataPoints(_dhtsensor.data);
         SetDataPoints(_luxsensor.data);
     } catch (err) {
-        adapterOnline = false;
+        _adapterOnline = false;
     }
 
+    // Set Alive DataPoint
     SetDataPoints({
-        adapterOnline: adapterOnline
+        adapterOnline: _adapterOnline
     });
 
     clearTimeout(requestTimout);
