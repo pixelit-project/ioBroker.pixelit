@@ -73,6 +73,10 @@ class PixelIt extends utils.Adapter {
     async onStateChange(id, state) {
         this.log.debug(`stateID ${id} changed: ${state.val} (ack = ${state.ack})`);
 
+        if (!state || state.ack) {
+            return;
+        }
+
         let inputArray = state.val.split(';');
 
         // 1 = text, 2 = text + text color, 3 = text + text color + image
@@ -94,54 +98,40 @@ class PixelIt extends utils.Adapter {
 
         this.log.debug(`_data ${_data}`);
 
-        axios.post('http://' + pixelItAddress + '/api/screen', JSON.parse('{' + _data + '}'), {
+        try {
+            await axios.post('http://' + pixelItAddress + '/api/screen', JSON.parse('{' + _data + '}'), {
                 timeout: 1000
-            }).then(function (response) {
-                // adapter.setStateAsync(id, {
-                //     ack: true
-                // });
-            })
-            .catch(function (error) {
-                // adapter.setStateAsync(id, {
-                //     ack: false
-                // });
             });
+
+            adapter.setStateAsync(id, {
+                ack: true
+            });
+
+        } catch (err) {}
     }
 }
 
 async function RequestAndWriteData() {
     let adapterOnline = true;
-
-    await axios.get('http://' + pixelItAddress + '/api/matrixinfo', {
+    try {
+        let _matrixinfo = await axios.get('http://' + pixelItAddress + '/api/matrixinfo', {
             timeout: 1000
-        }).then(function (response) {
-            SetDataPoints(response.data);
-        })
-        .catch(function (error) {
-            adapterOnline = false;
         });
 
-
-
-    await axios.get('http://' + pixelItAddress + '/api/dhtsensor', {
+        let _dhtsensor = await axios.get('http://' + pixelItAddress + '/api/dhtsensor', {
             timeout: 1000
-        }).then(function (response) {
-            SetDataPoints(response.data);
-        })
-        .catch(function (error) {
-            adapterOnline = false;
         });
 
-
-
-    await axios.get('http://' + pixelItAddress + '/api/luxsensor', {
+        let _luxsensor = await axios.get('http://' + pixelItAddress + '/api/luxsensor', {
             timeout: 1000
-        }).then(function (response) {
-            SetDataPoints(response.data);
-        })
-        .catch(function (error) {
-            adapterOnline = false;
         });
+
+        SetDataPoints(_matrixinfo.data);
+        SetDataPoints(_dhtsensor.data);
+        SetDataPoints(_luxsensor.data);
+    } catch (err) {
+        adapterOnline = false;
+    }
 
     SetDataPoints({
         adapterOnline: adapterOnline
