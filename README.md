@@ -10,10 +10,12 @@
 [![NPM](https://nodei.co/npm/iobroker.pixelit.png?downloads=true)](https://nodei.co/npm/iobroker.pixelit/)
 
 ## PixelIt adapter for ioBroker
-
-
+This adapter allows you to send from ioBroker Screen to [PixelIt](https://www.bastelbunker.de/pixel-it/).
+There are also data points for the optional sensors of [PixelIt](https://www.bastelbunker.de/pixel-it/), as well as the API of the [Pixel Gallery](https://pixelit.bastelbunker.de/PixelGallery)is implemented in the adapter.
 
 ## Configuration
+Create a new instance of the adapter
+Fill the IP and have fun :) 
 
 ## Changelog
 <!--
