@@ -1,77 +1,91 @@
 {
-  "common": {
-    "name": "pixelit",
-    "version": "0.0.1",
-    "news": {
-      "0.0.1": {
-        "en": "initial release",
-        "de": "Erstveröffentlichung",
-        "ru": "Начальная версия",
-        "pt": "lançamento inicial",
-        "nl": "Eerste uitgave",
-        "fr": "Première version",
-        "it": "Versione iniziale",
-        "es": "Versión inicial",
-        "pl": "Pierwsze wydanie",
-        "zh-cn": "首次出版"
-      }
+    "common": {
+        "name": "pixelit",
+        "version": "0.0.2-alpha.0",
+        "news": {
+            "0.0.2-alpha.0": {
+                "en": "initial release",
+                "de": "Erstveröffentlichung",
+                "ru": "изначальный выпуск",
+                "pt": "lançamento inicial",
+                "nl": "Eerste uitgave",
+                "fr": "Première version",
+                "it": "Versione iniziale",
+                "es": "Versión inicial",
+                "pl": "Pierwsze wydanie",
+                "zh-cn": "初始发行"
+            },
+            "0.0.1": {
+                "en": "initial release",
+                "de": "Erstveröffentlichung",
+                "ru": "Начальная версия",
+                "pt": "lançamento inicial",
+                "nl": "Eerste uitgave",
+                "fr": "Première version",
+                "it": "Versione iniziale",
+                "es": "Versión inicial",
+                "pl": "Pierwsze wydanie",
+                "zh-cn": "首次出版"
+            }
+        },
+        "title": "PixelIt",
+        "titleLang": {
+            "en": "PixelIt",
+            "de": "PixelIt",
+            "ru": "PixelIt",
+            "pt": "PixelIt",
+            "nl": "PixelIt",
+            "fr": "PixelIt",
+            "it": "PixelIt",
+            "es": "PixelIt",
+            "pl": "PixelIt"
+        },
+        "desc": {
+            "en": "PixelIt",
+            "de": "PixelIt",
+            "ru": "PixelIt",
+            "pt": "PixelIt",
+            "nl": "PixelIt",
+            "fr": "PixelIt",
+            "it": "PixelIt",
+            "es": "PixelIt",
+            "pl": "PixelIt"
+        },
+        "authors": [
+            "Dennis Hinzpeter <info@bastelbunker.de>"
+        ],
+        "keywords": [
+            "ioBroker",
+            "template",
+            "Smart Home",
+            "home automation",
+            "pixel it",
+            "pixelit"
+        ],
+        "logTransporter": true,
+        "license": "MIT",
+        "platform": "Javascript/Node.js",
+        "main": "main.js",
+        "icon": "pixelit.png",
+        "enabled": true,
+        "extIcon": "https://raw.githubusercontent.com/o0shojo0o/ioBroker.pixelit/master/admin/pixelit.png",
+        "readme": "https://github.com/o0shojo0o/ioBroker.pixelit/blob/master/README.md",
+        "loglevel": "info",
+        "mode": "daemon",
+        "type": "utility",
+        "compact": true,
+        "connectionType": "local",
+        "dataSource": "push",
+        "materialize": true,
+        "dependencies": [
+            {
+                "js-controller": ">=1.4.2"
+            }
+        ]
     },
-    "title": "PixelIt",
-    "titleLang": {
-      "en": "PixelIt",
-      "de": "PixelIt",
-      "ru": "PixelIt",
-      "pt": "PixelIt",
-      "nl": "PixelIt",
-      "fr": "PixelIt",
-      "it": "PixelIt",
-      "es": "PixelIt",
-      "pl": "PixelIt"
+    "native": {
+        "address": ""
     },
-    "desc": {
-      "en": "PixelIt",
-      "de": "PixelIt",
-      "ru": "PixelIt",
-      "pt": "PixelIt",
-      "nl": "PixelIt",
-      "fr": "PixelIt",
-      "it": "PixelIt",
-      "es": "PixelIt",
-      "pl": "PixelIt"
-    },
-    "authors": [
-      "Dennis Hinzpeter <info@bastelbunker.de>"
-    ],
-    "keywords": [
-      "ioBroker",
-      "template",
-      "Smart Home",
-      "home automation",
-      "pixel it",
-      "pixelit"
-    ],
-    "logTransporter": true,
-    "license": "MIT",
-    "platform": "Javascript/Node.js",
-    "main": "main.js",
-    "icon": "pixelit.png",
-    "enabled": true,
-    "extIcon": "https://raw.githubusercontent.com/o0shojo0o/ioBroker.pixelit/master/admin/pixelit.png",
-    "readme": "https://github.com/o0shojo0o/ioBroker.pixelit/blob/master/README.md",
-    "loglevel": "info",
-    "mode": "daemon",
-    "type": "utility",
-    "compact": true,
-    "connectionType": "local",
-    "dataSource": "push",
-    "materialize": true,
-    "dependencies": [{
-      "js-controller": ">=1.4.2"
-    }] 
-  },
-  "native": {
-    "address": ""
-  },
-  "objects": [],
-  "instanceObjects": []
+    "objects": [],
+    "instanceObjects": []
 }

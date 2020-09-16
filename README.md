@@ -16,9 +16,17 @@
 ## Configuration
 
 ## Changelog
+<!--
+    npm run release prerelease beta -- --all
+	Placeholder for the next version (at the beginning of the line):
+	### __WORK IN PROGRESS__
+-->
+
+### 0.0.2-alpha.0 (2020-09-16)
+* (IdleBit) initial release
 
 ### 0.0.1
-* (Dennis Hinzpeter) initial release
+* (IdleBit) initial push
 
 ## License
 MIT License
