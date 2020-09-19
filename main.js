@@ -3,6 +3,7 @@
 const utils = require('@iobroker/adapter-core');
 const axios = require('axios');
 const adapterName = require('./package.json').name.split('.').pop();
+const dataPointsFolders = require('./lib/dataPointsFolders').dataPointsFolders;
 const infoDataPoints = require('./lib/infoDataPoints').infoDataPoints;
 const sensorDataPoints = require('./lib/sensorDataPoints').sensorDataPoints;
 const rootDataPoints = require('./lib/rootDataPoints').rootDataPoints;
@@ -27,7 +28,6 @@ class PixelIt extends utils.Adapter {
         this.on('ready', this.onReady.bind(this));
         this.on('unload', this.onUnload.bind(this));
         this.on('stateChange', this.onStateChange.bind(this));
-
     }
 
     async onReady() {
@@ -43,22 +43,10 @@ class PixelIt extends utils.Adapter {
             return;
         }
 
-        // Create Root DataPoints       
-        for (let _key in rootDataPoints) {
-            await this.setObjectNotExistsAsync(rootDataPoints[_key].pointName, rootDataPoints[_key].point);
-        };
+        CreateFolderAndDataPoints();
 
-        // Create Info DataPoints   
-        for (let _key in infoDataPoints) {
-            await this.setObjectNotExistsAsync(infoDataPoints[_key].pointName, infoDataPoints[_key].point);
-        };
+        RequestAndWriteData(pixelItAddress);
 
-        // Create Sensor DataPoints       
-        for (let _key in sensorDataPoints) {
-            await this.setObjectNotExistsAsync(sensorDataPoints[_key].pointName, sensorDataPoints[_key].point);
-        };
-
-        RequestAndWriteData();
         this.subscribeStates('message');
     }
 
@@ -113,7 +101,29 @@ class PixelIt extends utils.Adapter {
     }
 }
 
-async function RequestAndWriteData() {
+async function CreateFolderAndDataPoints() {
+    // Create DataPoints Folders
+    for (let _key in dataPointsFolders) {
+        await this.setObjectNotExistsAsync(dataPointsFolders[_key].pointName, dataPointsFolders[_key].point);
+    };
+
+    // Create Root DataPoints       
+    for (let _key in rootDataPoints) {
+        await this.setObjectNotExistsAsync(rootDataPoints[_key].pointName, rootDataPoints[_key].point);
+    };
+
+    // Create Info DataPoints   
+    for (let _key in infoDataPoints) {
+        await this.setObjectNotExistsAsync(infoDataPoints[_key].pointName, infoDataPoints[_key].point);
+    };
+
+    // Create Sensor DataPoints       
+    for (let _key in sensorDataPoints) {
+        await this.setObjectNotExistsAsync(sensorDataPoints[_key].pointName, sensorDataPoints[_key].point);
+    };
+}
+
+async function RequestAndWriteData(pixelItAddress) {
     let _adapterOnline = true;
 
     try {
