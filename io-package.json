@@ -77,14 +77,13 @@
         "connectionType": "local",
         "dataSource": "push",
         "materialize": true,
-        "dependencies": [
-            {
-                "js-controller": ">=1.4.2"
-            }
-        ]
+        "dependencies": [{
+            "js-controller": ">=2.4.0"
+        }]
     },
     "native": {
-        "address": ""
+        "ip": "",
+        "pollinterval": 5
     },
     "objects": [],
     "instanceObjects": []

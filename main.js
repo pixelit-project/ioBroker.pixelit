@@ -14,8 +14,13 @@ let timerInterval;
 let requestTimout;
 // Set axios Timeout 
 let axiosConfigToPixelIt = {
-    timeout: 1000
+    timeout: 3000,
+    headers: {
+        'User-Agent': 'ioBroker_PixelIt'
+    }
 };
+// Init BMPCache
+let bmpCache = new Array();
 
 class PixelIt extends utils.Adapter {
 
@@ -34,8 +39,8 @@ class PixelIt extends utils.Adapter {
         adapter = this;
 
         // Get Config
-        pixelItAddress = this.config.address;
-        timerInterval = 5000;
+        pixelItAddress = this.config.ip;
+        timerInterval = this.config.pollinterval;
 
         // Check Server address
         if (!pixelItAddress || pixelItAddress === '') {
@@ -43,11 +48,26 @@ class PixelIt extends utils.Adapter {
             return;
         }
 
+        // Check TimerInterval
+        if (!timerInterval || timerInterval === '') {
+            this.log.warn('PixelIt polling interval not set, please check your settings!')
+            return;
+        }
+
+        // Seconds to milliseconds
+        timerInterval = timerInterval * 1000;
+
+        // Create Folder and DataPoints
         CreateFolderAndDataPoints();
 
-        RequestAndWriteData(pixelItAddress);
+        // Request Data and write to DataPoints 
+        RequestAndWriteData();
 
+        // Subscribe Message DataPoint
         this.subscribeStates('message');
+
+        // Subscribe Extended Message DataPoint
+        this.subscribeStates('ext_message');
     }
 
     onUnload(callback) {
@@ -65,33 +85,31 @@ class PixelIt extends utils.Adapter {
     async onStateChange(id, state) {
         this.log.debug(`stateID ${id} changed: ${state.val} (ack = ${state.ack})`);
 
+        // Ingore Message with ack=true 
         if (!state || state.ack) {
             return;
         }
 
-        let inputArray = state.val.split(';');
-
-        // 1 = text, 2 = text + text color, 3 = text + text color + image
-        let _countElements = inputArray.length;
-
-        this.log.debug(`_countElements ${_countElements}`);
-
         let _data;
 
-        if (_countElements === 1) {
-            _data = await Text(inputArray[0]);
-        }
-        if (_countElements >= 2) {
-            _data = await Text(inputArray[0], inputArray[1]);
-        }
-        if (_countElements >= 3) {
-            _data += await BMP(inputArray[2]);
+        if (id === adapter.namespace + '.message') {
+            _data = await CreateSimpleMessage(state.val);
+        } else if (id === adapter.namespace + '.ext_message') {
+
+            _data = JSON.parse(state.val);
+
+            if (_data.bitmap && _data.bitmap.data) {
+                // If only a BMP Id is passed, the BMP Array must be retrieved via API
+                if (typeof _data.bitmap.data === 'number') {
+                    _data.bitmap.data = JSON.parse(await GetBMPArray(_data.bitmap.data));
+                }
+            }
         }
 
-        this.log.debug(`_data ${_data}`);
+        this.log.debug(`_data ${JSON.stringify(_data)}`);
 
         try {
-            await axios.post('http://' + pixelItAddress + '/api/screen', JSON.parse('{' + _data + '}'), axiosConfigToPixelIt);
+            await axios.post('http://' + pixelItAddress + '/api/screen', _data, axiosConfigToPixelIt);
 
             adapter.setStateAsync(id, {
                 ack: true
@@ -99,6 +117,36 @@ class PixelIt extends utils.Adapter {
 
         } catch (err) {}
     }
+}
+
+async function CreateSimpleMessage(input) {
+
+    let inputArray = input.split(';');
+    // 1 = text, 2 = text + text color, 3 = text + text color + image
+    let _countElements = inputArray.length;
+
+    adapter.log.debug(`_countElements ${_countElements}`);
+
+    let _data;
+
+    if (_countElements === 1) {
+        _data = await GetTextJson(inputArray[0]);
+    }
+    if (_countElements >= 2) {
+        _data = await GetTextJson(inputArray[0], inputArray[1]);
+    }
+    if (_countElements >= 3) {
+        let _webBmp = await GetBMPArray(inputArray[2]);
+
+        _data += `,"bitmapAnimation": {
+                    "data": [${_webBmp}],
+                    "animationDelay": 200,  
+                    "rubberbanding": false, 
+                    "limitLoops": 0
+                }`;
+    }
+    _data = '{' + _data + '}';
+    return JSON.parse(_data);
 }
 
 async function CreateFolderAndDataPoints() {
@@ -123,7 +171,7 @@ async function CreateFolderAndDataPoints() {
     };
 }
 
-async function RequestAndWriteData(pixelItAddress) {
+async function RequestAndWriteData() {
     let _adapterOnline = true;
 
     try {
@@ -172,7 +220,7 @@ function SetDataPoints(msgObj) {
     }
 }
 
-async function Text(text, rgb) {
+async function GetTextJson(text, rgb) {
     if (rgb) {
         rgb = rgb.split(',');
     } else {
@@ -180,44 +228,50 @@ async function Text(text, rgb) {
     }
 
     return `"text": { 
-        "textString": "${text}", 
-        "bigFont": false,
-        "scrollText": "auto", 
-        "scrollTextDelay": 50,                   
-        "centerText": false, 
-        "position": {
-            "x": 8,
-            "y": 1
-        },
-        "color": {
-            "r": ${rgb[0]}, 
-            "g": ${rgb[1]},
-            "b": ${rgb[2]} 
-        }
-    }`;
+                "textString": "${text}", 
+                "bigFont": false,
+                "scrollText": "auto", 
+                "scrollTextDelay": 50,                   
+                "centerText": false, 
+                "position": {
+                    "x": 8,
+                    "y": 1
+                },
+                "color": {
+                    "r": ${rgb[0]}, 
+                    "g": ${rgb[1]},
+                    "b": ${rgb[2]} 
+                }
+            }`;
 }
 
-async function BMP(id) {
+async function GetBMPArray(id) {
     let webBmp = '[64512,0,0,0,0,0,0,64512,0,64512,0,0,0,0,64512,0,0,0,64512,0,0,64512,0,0,0,0,0,64512,64512,0,0,0,0,0,0,64512,64512,0,0,0,0,0,64512,0,0,64512,0,0,0,64512,0,0,0,0,64512,0,64512,0,0,0,0,0,0,64512]';
 
-    await axios.get('https://pixelit.bastelbunker.de/API/GetBMPByID/' + id, {
-            timeout: 1000,
-            headers: {
-                'User-Agent': 'ioBroker_PixelIt'
-            }
-        }).then(function (response) {
+    // Check if id is cached
+    if (bmpCache[id]) {
+        adapter.log.debug(`Get BMP ${id} from cache`)
+        // Get id from cache
+        webBmp = bmpCache[id];
+    } else {
+        adapter.log.debug(`Get BMP ${id} from API`)
+
+        try {
+            // Get id from API
+            let response = await axios.get('https://pixelit.bastelbunker.de/API/GetBMPByID/' + id, axiosConfigToPixelIt);
+
             if (response.data && response.data.id && response.data.id != 0) {
                 webBmp = response.data.rgB565Array;
+                // Add id to cache
+                bmpCache[id] = webBmp;
             }
-        })
-        .catch(function (error) {});
 
-    return `,"bitmapAnimation": {
-        "data": [${webBmp}],
-        "animationDelay": 200,  
-        "rubberbanding": false, 
-        "limitLoops": 0
-    }`;
+        } catch (err) {
+            adapter.log.error(err)
+        }
+    }
+
+    return webBmp;
 }
 
 if (module.parent) {

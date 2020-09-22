@@ -17,8 +17,12 @@ systemDictionary = {
 		'en': 'PixelIt Options',
 		'de': 'PixelIt Einstellungen'
 	},
-	'address': {
-		'en': 'Address',
-		'de': 'Adresse'
+	'ip': {
+		'en': 'IP-Address',
+		'de': 'IP-Adresse'
+	},
+	'pollinterval': {
+		'en': 'Polling interval (sec)',
+		'de': 'Abfrage-Intervall (sek)'
 	},
 };
