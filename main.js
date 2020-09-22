@@ -104,22 +104,22 @@ class PixelIt extends utils.Adapter {
 async function CreateFolderAndDataPoints() {
     // Create DataPoints Folders
     for (let _key in dataPointsFolders) {
-        await this.setObjectNotExistsAsync(dataPointsFolders[_key].pointName, dataPointsFolders[_key].point);
+        await adapter.setObjectNotExistsAsync(dataPointsFolders[_key].pointName, dataPointsFolders[_key].point);
     };
 
     // Create Root DataPoints       
     for (let _key in rootDataPoints) {
-        await this.setObjectNotExistsAsync(rootDataPoints[_key].pointName, rootDataPoints[_key].point);
+        await adapter.setObjectNotExistsAsync(rootDataPoints[_key].pointName, rootDataPoints[_key].point);
     };
 
     // Create Info DataPoints   
     for (let _key in infoDataPoints) {
-        await this.setObjectNotExistsAsync(infoDataPoints[_key].pointName, infoDataPoints[_key].point);
+        await adapter.setObjectNotExistsAsync(infoDataPoints[_key].pointName, infoDataPoints[_key].point);
     };
 
     // Create Sensor DataPoints       
     for (let _key in sensorDataPoints) {
-        await this.setObjectNotExistsAsync(sensorDataPoints[_key].pointName, sensorDataPoints[_key].point);
+        await adapter.setObjectNotExistsAsync(sensorDataPoints[_key].pointName, sensorDataPoints[_key].point);
     };
 }
 
