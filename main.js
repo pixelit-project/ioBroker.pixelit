@@ -13,7 +13,7 @@ let pixelItAddress;
 let timerInterval;
 let requestTimout;
 // Set axios Timeout 
-let axiosConfigToPixelIt = {
+const axiosConfigToPixelIt = {
     timeout: 3000,
     headers: {
         'User-Agent': 'ioBroker_PixelIt'
@@ -70,7 +70,7 @@ class PixelIt extends utils.Adapter {
         this.subscribeStates('ext_message');
     }
 
-    onUnload(callback) {
+    async onUnload(callback) {
         try {
             clearTimeout(requestTimout);
             SetDataPoints({
@@ -90,26 +90,26 @@ class PixelIt extends utils.Adapter {
             return;
         }
 
-        let _data;
+        let data;
 
         if (id === adapter.namespace + '.message') {
-            _data = await CreateSimpleMessage(state.val);
+            data = await CreateSimpleMessage(state.val);
         } else if (id === adapter.namespace + '.ext_message') {
 
-            _data = JSON.parse(state.val);
+            data = JSON.parse(state.val);
 
-            if (_data.bitmap && _data.bitmap.data) {
+            if (data.bitmap && data.bitmap.data) {
                 // If only a BMP Id is passed, the BMP Array must be retrieved via API
-                if (typeof _data.bitmap.data === 'number') {
-                    _data.bitmap.data = JSON.parse(await GetBMPArray(_data.bitmap.data));
+                if (typeof data.bitmap.data === 'number') {
+                    data.bitmap.data = JSON.parse(await GetBMPArray(data.bitmap.data));
                 }
             }
         }
 
-        this.log.debug(`_data ${JSON.stringify(_data)}`);
+        this.log.debug(`_data ${JSON.stringify(data)}`);
 
         try {
-            await axios.post('http://' + pixelItAddress + '/api/screen', _data, axiosConfigToPixelIt);
+            await axios.post('http://' + pixelItAddress + '/api/screen', data, axiosConfigToPixelIt);
 
             adapter.setStateAsync(id, {
                 ack: true
@@ -125,95 +125,97 @@ async function CreateSimpleMessage(input) {
     // 1 = text, 2 = text + text color, 3 = text + text color + image
     let _countElements = inputArray.length;
 
-    adapter.log.debug(`_countElements ${_countElements}`);
+    //adapter.log.debug(`_countElements ${_countElements}`);
 
-    let _data;
+    let data;
 
     if (_countElements === 1) {
-        _data = await GetTextJson(inputArray[0]);
+        data = await GetTextJson(inputArray[0]);
     }
     if (_countElements >= 2) {
-        _data = await GetTextJson(inputArray[0], inputArray[1]);
+        data = await GetTextJson(inputArray[0], inputArray[1]);
     }
     if (_countElements >= 3) {
         let _webBmp = await GetBMPArray(inputArray[2]);
 
-        _data += `,"bitmapAnimation": {
+        data += `,"bitmapAnimation": {
                     "data": [${_webBmp}],
                     "animationDelay": 200,  
                     "rubberbanding": false, 
                     "limitLoops": 0
                 }`;
     }
-    _data = '{' + _data + '}';
-    return JSON.parse(_data);
+    data = '{' + data + '}';
+    return JSON.parse(data);
 }
 
 async function CreateFolderAndDataPoints() {
     // Create DataPoints Folders
-    for (let _key in dataPointsFolders) {
-        await adapter.setObjectNotExistsAsync(dataPointsFolders[_key].pointName, dataPointsFolders[_key].point);
+    for (let key in dataPointsFolders) {
+        await adapter.setObjectNotExistsAsync(dataPointsFolders[key].pointName, dataPointsFolders[key].point);
     };
 
     // Create Root DataPoints       
-    for (let _key in rootDataPoints) {
-        await adapter.setObjectNotExistsAsync(rootDataPoints[_key].pointName, rootDataPoints[_key].point);
+    for (let key in rootDataPoints) {
+        await adapter.setObjectNotExistsAsync(rootDataPoints[key].pointName, rootDataPoints[key].point);
     };
 
     // Create Info DataPoints   
-    for (let _key in infoDataPoints) {
-        await adapter.setObjectNotExistsAsync(infoDataPoints[_key].pointName, infoDataPoints[_key].point);
+    for (let key in infoDataPoints) {
+        await adapter.setObjectNotExistsAsync(infoDataPoints[key].pointName, infoDataPoints[key].point);
     };
 
     // Create Sensor DataPoints       
-    for (let _key in sensorDataPoints) {
-        await adapter.setObjectNotExistsAsync(sensorDataPoints[_key].pointName, sensorDataPoints[_key].point);
+    for (let key in sensorDataPoints) {
+        await adapter.setObjectNotExistsAsync(sensorDataPoints[key].pointName, sensorDataPoints[key].point);
     };
 }
 
 async function RequestAndWriteData() {
-    let _adapterOnline = true;
+    let adapterOnline = true;
 
     try {
-        // Get MatrixInfo
-        let _matrixinfo = await axios.get('http://' + pixelItAddress + '/api/matrixinfo', axiosConfigToPixelIt);
-        // Get DHTSensor
-        let _dhtsensor = await axios.get('http://' + pixelItAddress + '/api/dhtsensor', axiosConfigToPixelIt);
-        // Get LuxSensor
-        let _luxsensor = await axios.get('http://' + pixelItAddress + '/api/luxsensor', axiosConfigToPixelIt);
+        const responses = await axios.all([
+            // Get MatrixInfo
+            axios.get('http://' + pixelItAddress + '/api/matrixinfo', axiosConfigToPixelIt),
+            // Get DHTSensor
+            axios.get('http://' + pixelItAddress + '/api/dhtsensor', axiosConfigToPixelIt),
+            // Get LuxSensor
+            axios.get('http://' + pixelItAddress + '/api/luxsensor', axiosConfigToPixelIt)
+        ]);
 
         // Set DataPoints
-        SetDataPoints(_matrixinfo.data);
-        SetDataPoints(_dhtsensor.data);
-        SetDataPoints(_luxsensor.data);
+        for (var key in responses) {
+            SetDataPoints(responses[key].data);
+        }
     } catch (err) {
-        _adapterOnline = false;
+        adapterOnline = false;
     }
 
     // Set Alive DataPoint
     SetDataPoints({
-        adapterOnline: _adapterOnline
+        adapterOnline: adapterOnline
     });
 
     clearTimeout(requestTimout);
     requestTimout = setTimeout(RequestAndWriteData, timerInterval);
 }
 
-function SetDataPoints(msgObj) {
-    for (let _key in msgObj) {
-        let _dataPoint = infoDataPoints.find(x => x.msgObjName === _key);
+async function SetDataPoints(msgObj) {
+    for (let key in msgObj) {
+        let dataPoint = infoDataPoints.find(x => x.msgObjName === key);
 
-        if (!_dataPoint) {
-            _dataPoint = sensorDataPoints.find(x => x.msgObjName === _key);
+        if (!dataPoint) {
+            dataPoint = sensorDataPoints.find(x => x.msgObjName === key);
         }
 
-        if (!_dataPoint) {
-            _dataPoint = rootDataPoints.find(x => x.msgObjName === _key);
+        if (!dataPoint) {
+            dataPoint = rootDataPoints.find(x => x.msgObjName === key);
         }
 
-        if (_dataPoint) {
-            adapter.setStateAsync(_dataPoint.pointName, {
-                val: msgObj[_key],
+        if (dataPoint) {
+            adapter.setStateAsync(dataPoint.pointName, {
+                val: msgObj[key],
                 ack: true
             });
         }
@@ -273,6 +275,7 @@ async function GetBMPArray(id) {
 
     return webBmp;
 }
+
 
 if (module.parent) {
     module.exports = (options) => new PixelIt(options);
