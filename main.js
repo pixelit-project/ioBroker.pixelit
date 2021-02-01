@@ -54,7 +54,7 @@ class PixelIt extends utils.Adapter {
             return;
         }
 
-        this.setState('info.connection', false, true);
+        this.setStateChangedAsync('info.connection', false, true);
 
         // Seconds to milliseconds
         timerInterval = timerInterval * 1000;
@@ -75,7 +75,7 @@ class PixelIt extends utils.Adapter {
     async onUnload(callback) {
         try {
             clearTimeout(requestTimout);     
-            adapter.setState('info.connection', false, true);   
+            adapter.setStateChangedAsync('info.connection', false, true);   
             callback();
         } catch (ex) {
             callback();
@@ -111,7 +111,7 @@ class PixelIt extends utils.Adapter {
         try {
             await axios.post('http://' + pixelItAddress + '/api/screen', data, axiosConfigToPixelIt);
 
-            adapter.setStateAsync(id, {
+            adapter.setStateChangedAsync(id, {
                 ack: true
             });
 
@@ -193,7 +193,7 @@ async function RequestAndWriteData() {
     }
 
     // Set Alive DataPoint
-    adapter.setState('info.connection', adapterOnline, true);
+    adapter.setStateChangedAsync('info.connection', adapterOnline, true);
 
     clearTimeout(requestTimout);
     requestTimout = setTimeout(RequestAndWriteData, timerInterval);
