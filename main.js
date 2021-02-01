@@ -20,7 +20,7 @@ const axiosConfigToPixelIt = {
     }
 };
 // Init BMPCache
-let bmpCache = new Array();
+const bmpCache = [];
 
 class PixelIt extends utils.Adapter {
 
@@ -54,6 +54,8 @@ class PixelIt extends utils.Adapter {
             return;
         }
 
+        this.setState('info.connection', false, true);
+
         // Seconds to milliseconds
         timerInterval = timerInterval * 1000;
 
@@ -72,10 +74,8 @@ class PixelIt extends utils.Adapter {
 
     async onUnload(callback) {
         try {
-            clearTimeout(requestTimout);
-            SetDataPoints({
-                adapterOnline: false
-            });
+            clearTimeout(requestTimout);     
+            adapter.setState('info.connection', false, true);   
             callback();
         } catch (ex) {
             callback();
@@ -106,7 +106,7 @@ class PixelIt extends utils.Adapter {
             }
         }
 
-        this.log.debug(`_data ${JSON.stringify(data)}`);
+        this.log.debug(`data ${JSON.stringify(data)}`);
 
         try {
             await axios.post('http://' + pixelItAddress + '/api/screen', data, axiosConfigToPixelIt);
@@ -123,23 +123,23 @@ async function CreateSimpleMessage(input) {
 
     let inputArray = input.split(';');
     // 1 = text, 2 = text + text color, 3 = text + text color + image
-    let _countElements = inputArray.length;
+    let countElements = inputArray.length;
 
-    //adapter.log.debug(`_countElements ${_countElements}`);
+    //adapter.log.debug(`countElements ${countElements}`);
 
     let data;
 
-    if (_countElements === 1) {
+    if (countElements === 1) {
         data = await GetTextJson(inputArray[0]);
     }
-    if (_countElements >= 2) {
+    if (countElements >= 2) {
         data = await GetTextJson(inputArray[0], inputArray[1]);
     }
-    if (_countElements >= 3) {
-        let _webBmp = await GetBMPArray(inputArray[2]);
+    if (countElements >= 3) {
+        let webBmp = await GetBMPArray(inputArray[2]);
 
         data += `,"bitmapAnimation": {
-                    "data": [${_webBmp}],
+                    "data": [${webBmp}],
                     "animationDelay": 200,  
                     "rubberbanding": false, 
                     "limitLoops": 0
@@ -187,15 +187,13 @@ async function RequestAndWriteData() {
         // Set DataPoints
         for (var key in responses) {
             SetDataPoints(responses[key].data);
-        }
+        }        
     } catch (err) {
         adapterOnline = false;
     }
 
     // Set Alive DataPoint
-    SetDataPoints({
-        adapterOnline: adapterOnline
-    });
+    this.setState('info.connection', adapterOnline, true);
 
     clearTimeout(requestTimout);
     requestTimout = setTimeout(RequestAndWriteData, timerInterval);

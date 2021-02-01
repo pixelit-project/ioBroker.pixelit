@@ -19,11 +19,14 @@ Fill the IP and have fun :)
 
 ## Changelog
 <!--
-    https://github.com/AlCalzone/release-script#usage
-    npm run release prerelease beta -- --all
+ https://github.com/AlCalzone/release-script#usage
+    npm run release minor -- --all 0.9.8 -> 0.10.0
+    npm run release patch -- --all 0.9.8 -> 0.9.9
+    npm run release prerelease beta -- --all v0.2.1 -> v0.2.2-beta.0  
 	Placeholder for the next version (at the beginning of the line):
 	### __WORK IN PROGRESS__
 -->
+### __WORK IN PROGRESS__
 
 ### 0.0.2-alpha.0 (2020-09-16)
 * (IdleBit) initial release
@@ -34,7 +37,7 @@ Fill the IP and have fun :)
 ## License
 MIT License
 
-Copyright (c) 2020 Dennis Hinzpeter <info@bastelbunker.de>
+Copyright (c) 2021 Dennis Rathjen <info@bastelbunker.de>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

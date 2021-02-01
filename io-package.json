@@ -52,7 +52,7 @@
             "pl": "PixelIt"
         },
         "authors": [
-            "Dennis Hinzpeter <info@bastelbunker.de>"
+            "Dennis Rathjen <info@bastelbunker.de>"
         ],
         "keywords": [
             "ioBroker",
@@ -86,5 +86,26 @@
         "pollinterval": 5
     },
     "objects": [],
-    "instanceObjects": []
+    "instanceObjects": [{
+        "_id": "info",
+        "type": "channel",
+        "common": {
+            "name": "Information"
+        },
+        "native": {}
+    },
+    {
+        "_id": "info.connection",
+        "type": "state",
+        "common": {
+            "role": "indicator.connected",
+            "name": "Device or service connected",
+            "type": "boolean",
+            "read": true,
+            "write": false,
+            "def": false
+        },
+        "native": {}
+    }
+]
 }
