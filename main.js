@@ -104,9 +104,9 @@ class PixelIt extends utils.Adapter {
                         data.bitmap.data = JSON.parse(await GetBMPArray(data.bitmap.data));
                     }
                 }
-           } catch (err) {
-               this.log.warn('Cannot parse JSON from ext_message...');
-           }
+            } catch (err) {
+               this.log.warn(`Cannot parse JSON from ext_message... ${data.bitmap.data}`);
+            }
         }
 
         this.log.debug(`data ${JSON.stringify(data)}`);
