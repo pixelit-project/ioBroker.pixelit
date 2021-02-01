@@ -211,8 +211,8 @@ async function SetDataPoints(msgObj) {
             dataPoint = rootDataPoints.find(x => x.msgObjName === key);
         }
 
-        if (dataPoint) {
-            adapter.setStateAsync(dataPoint.pointName, {
+        if (dataPoint) {      
+            adapter.setStateChangedAsync(dataPoint.pointName, {
                 val: msgObj[key],
                 ack: true
             });
