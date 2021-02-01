@@ -94,16 +94,19 @@ class PixelIt extends utils.Adapter {
 
         if (id === adapter.namespace + '.message') {
             data = await CreateSimpleMessage(state.val);
-        } else if (id === adapter.namespace + '.ext_message') {
-
-            data = JSON.parse(state.val);
-
-            if (data.bitmap && data.bitmap.data) {
-                // If only a BMP Id is passed, the BMP Array must be retrieved via API
-                if (typeof data.bitmap.data === 'number') {
-                    data.bitmap.data = JSON.parse(await GetBMPArray(data.bitmap.data));
+        } 
+        else if (id === adapter.namespace + '.ext_message') {
+           try {
+                data = JSON.parse(state.val);            
+                if (data.bitmap && data.bitmap.data) {
+                    // If only a BMP Id is passed, the BMP Array must be retrieved via API
+                    if (typeof data.bitmap.data === 'number') {
+                        data.bitmap.data = JSON.parse(await GetBMPArray(data.bitmap.data));
+                    }
                 }
-            }
+           } catch (err) {
+               this.log.warn('Cannot parse JSON from ext_message...');
+           }
         }
 
         this.log.debug(`data ${JSON.stringify(data)}`);
