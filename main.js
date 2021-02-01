@@ -105,7 +105,7 @@ class PixelIt extends utils.Adapter {
                     }
                 }
             } catch (err) {
-               this.log.warn(`Cannot parse JSON from ext_message... ${data.bitmap.data}`);
+               this.log.warn(`Cannot parse JSON from ext_message... ${state.val}`);
                return;
             }
         }
