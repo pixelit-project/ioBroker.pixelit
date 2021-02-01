@@ -26,7 +26,8 @@ Fill the IP and have fun :)
 	Placeholder for the next version (at the beginning of the line):
 	### __WORK IN PROGRESS__
 -->
-### __WORK IN PROGRESS__
+### 0.0.2 (2021-02-01)
+* (IdleBit) code refactoring and bugfixes 
 
 ### 0.0.2-alpha.0 (2020-09-16)
 * (IdleBit) initial release
