@@ -193,7 +193,7 @@ async function RequestAndWriteData() {
     }
 
     // Set Alive DataPoint
-    this.setState('info.connection', adapterOnline, true);
+    adapter.setState('info.connection', adapterOnline, true);
 
     clearTimeout(requestTimout);
     requestTimout = setTimeout(RequestAndWriteData, timerInterval);
