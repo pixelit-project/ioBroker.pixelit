@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "pixelit",
-        "version": "0.0.2",
+        "version": "0.0.3",
         "news": {
+            "0.0.3": {
+                "en": "add brightness and code refactoring",
+                "de": "Fügen Sie Helligkeit und Code-Refactoring hinzu",
+                "ru": "добавить яркость и рефакторинг кода",
+                "pt": "adicionar brilho e refatoração de código",
+                "nl": "voeg helderheid en code refactoring toe",
+                "fr": "ajouter la luminosité et la refactorisation du code",
+                "it": "aggiungere luminosità e refactoring del codice",
+                "es": "agregar brillo y refactorización de código",
+                "pl": "dodać jasność i refaktoryzację kodu",
+                "zh-cn": "增加亮度和代码重构"
+            },
             "0.0.2": {
                 "en": "code refactoring and bugfixes",
                 "de": "Code Refactoring und Bugfixes",

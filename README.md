@@ -26,14 +26,17 @@ Fill the IP and have fun :)
 	Placeholder for the next version (at the beginning of the line):
 	### __WORK IN PROGRESS__
 -->
+### 0.0.3 (2021-02-11)
+* (o0shojo0o) add brightness and code refactoring
+
 ### 0.0.2 (2021-02-01)
-* (IdleBit) code refactoring and bugfixes 
+* (o0shojo0o) code refactoring and bugfixes 
 
 ### 0.0.2-alpha.0 (2020-09-16)
-* (IdleBit) initial release
+* (o0shojo0o) initial release
 
 ### 0.0.1
-* (IdleBit) initial push
+* (o0shojo0o) initial push
 
 ## License
 MIT License
