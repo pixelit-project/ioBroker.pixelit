@@ -243,7 +243,10 @@ async function setDataPoints(msgObj) {
             dataPoint = rootDataPoints.find(x => x.msgObjName === key);
         }
 
-        if (dataPoint) {      
+        if (dataPoint) {   
+            if (key == 'lux') {
+                msgObj[key] = msgObj[key].toFixed();
+            }   
             adapter.setStateChangedAsync(dataPoint.pointName, {
                 val: msgObj[key],
                 ack: true
