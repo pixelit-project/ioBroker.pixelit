@@ -60,16 +60,22 @@ class PixelIt extends utils.Adapter {
         timerInterval = timerInterval * 1000;
 
         // Create Folder and DataPoints
-        CreateFolderAndDataPoints();
+        await createFolderAndDataPoints();
 
         // Request Data and write to DataPoints 
-        RequestAndWriteData();
+        requestAndWriteData();
 
         // Subscribe Message DataPoint
         this.subscribeStates('message');
 
         // Subscribe Extended Message DataPoint
         this.subscribeStates('ext_message');
+
+        // Subscribe Extended Message DataPoint
+        this.subscribeStates('brightness');
+
+        // Subscribe Extended Message DataPoint
+        this.subscribeStates('brightness_255');
     }
 
     async onUnload(callback) {
@@ -83,17 +89,18 @@ class PixelIt extends utils.Adapter {
     }
 
     async onStateChange(id, state) {
-        this.log.debug(`stateID ${id} changed: ${state.val} (ack = ${state.ack})`);
+        this.log.debug(`onStateChange-> id:${id} state:${JSON.stringify(state)}`);
 
         // Ingore Message with ack=true 
-        if (!state || state.ack) {
+        if (!state || state.from.includes('adapter.pixelit.')) {
+            this.log.debug(`onStateChange-> self triggered, change drop!`);
             return;
         }
 
         let data;
 
         if (id === adapter.namespace + '.message') {
-            data = await CreateSimpleMessage(state.val);
+            data = await createSimpleMessage(state.val);
         } 
         else if (id === adapter.namespace + '.ext_message') {
            try {
@@ -101,7 +108,7 @@ class PixelIt extends utils.Adapter {
                 if (data.bitmap && data.bitmap.data) {
                     // If only a BMP Id is passed, the BMP Array must be retrieved via API
                     if (typeof data.bitmap.data === 'number') {
-                        data.bitmap.data = JSON.parse(await GetBMPArray(data.bitmap.data));
+                        data.bitmap.data = JSON.parse(await getBMPArray(data.bitmap.data));
                     }
                 }
             } catch (err) {
@@ -109,51 +116,72 @@ class PixelIt extends utils.Adapter {
                return;
             }
         }
+        else if (id === adapter.namespace + '.brightness'){
+            // Create reMap 
+            const reMap = createRemap(0, 100, 0, 255); 
+            this.setStateChangedAsync(adapter.namespace + '.brightness_255', reMap(state.val));
+            data = {"brightness": reMap(state.val)};
+        }
+        else if (id === adapter.namespace + '.brightness_255'){
+            const reMap = createRemap(0, 255, 0, 100);  
+            this.setStateChangedAsync(adapter.namespace + '.brightness', reMap(state.val));
+            data = {"brightness": state.val};
+        }
 
         this.log.debug(`data ${JSON.stringify(data)}`);
 
         try {
             await axios.post('http://' + pixelItAddress + '/api/screen', data, axiosConfigToPixelIt);
 
-            adapter.setStateChangedAsync(id, {
+            this.setStateChangedAsync(id, {
                 ack: true
             });
+
+            if (id.endsWith('.brightness_255')){
+                this.setStateChangedAsync(adapter.namespace + '.brightness', {
+                    ack: true
+                });
+            }
+            else if (id.endsWith('.brightness')){
+                this.setStateChangedAsync(adapter.namespace + '.brightness_255', {
+                    ack: true
+                });
+            }
 
         } catch (err) {}
     }
 }
 
-async function CreateSimpleMessage(input) {
+async function createSimpleMessage(input) {
 
-    let inputArray = input.split(';');
+    const inputArray = input.split(';');
     // 1 = text, 2 = text + text color, 3 = text + text color + image
-    let countElements = inputArray.length;
-
-    //adapter.log.debug(`countElements ${countElements}`);
+    const countElements = inputArray.length;
 
     let data;
 
     if (countElements === 1) {
-        data = await GetTextJson(inputArray[0]);
+        data = await getTextJson(inputArray[0]);
     }
     if (countElements >= 2) {
-        data = await GetTextJson(inputArray[0], inputArray[1]);
+        data = await getTextJson(inputArray[0], inputArray[1]);
     }
     if (countElements >= 3) {
-        let webBmp = await GetBMPArray(inputArray[2]);
+        const webBmp = await getBMPArray(inputArray[2]);
 
-        data += `,"bitmapAnimation": {
-                    "data": [${webBmp}],
-                    "animationDelay": 200,  
-                    "rubberbanding": false, 
-                    "limitLoops": 0
-                }`;
+        data.bitmapAnimation = {                       
+            "data": webBmp,
+            "animationDelay": 200,  
+            "rubberbanding": false, 
+            "limitLoops": 0
+        };    
     }
-    data = '{' + data + '}';
-    return JSON.parse(data);
+
+    adapter.log.debug(`createSimpleMessage-> idata:${JSON.stringify(data)}`);
+    return data;
 }
 
-async function CreateFolderAndDataPoints() {
+async function createFolderAndDataPoints() {
     // Create DataPoints Folders
     for (let key in dataPointsFolders) {
         await adapter.setObjectNotExistsAsync(dataPointsFolders[key].pointName, dataPointsFolders[key].point);
@@ -175,7 +203,7 @@ async function CreateFolderAndDataPoints() {
     };
 }
 
-async function RequestAndWriteData() {
+async function requestAndWriteData() {
     let adapterOnline = true;
 
     try {
@@ -190,7 +218,7 @@ async function RequestAndWriteData() {
 
         // Set DataPoints
         for (var key in responses) {
-            SetDataPoints(responses[key].data);
+            setDataPoints(responses[key].data);
         }        
     } catch (err) {
         adapterOnline = false;
@@ -200,10 +228,10 @@ async function RequestAndWriteData() {
     adapter.setStateChangedAsync('info.connection', adapterOnline, true);
 
     clearTimeout(requestTimout);
-    requestTimout = setTimeout(RequestAndWriteData, timerInterval);
+    requestTimout = setTimeout(requestAndWriteData, timerInterval);
 }
 
-async function SetDataPoints(msgObj) {
+async function setDataPoints(msgObj) {
     for (let key in msgObj) {
         let dataPoint = infoDataPoints.find(x => x.msgObjName === key);
 
@@ -224,33 +252,37 @@ async function SetDataPoints(msgObj) {
     }
 }
 
-async function GetTextJson(text, rgb) {
+async function getTextJson(text, rgb) {
     if (rgb) {
         rgb = rgb.split(',');
     } else {
         rgb = [255, 255, 255];
     }
 
-    return `"text": { 
-                "textString": "${text}", 
-                "bigFont": false,
-                "scrollText": "auto", 
-                "scrollTextDelay": 50,                   
-                "centerText": false, 
+    let data ={
+            "text":{
+                "textString": text, 
+                "bigFont": false, 
+                "scrollText": "auto",
+                "scrollTextDelay": 50, 
+                "centerText": false,
                 "position": {
                     "x": 8,
                     "y": 1
-                },
-                "color": {
-                    "r": ${rgb[0]}, 
-                    "g": ${rgb[1]},
-                    "b": ${rgb[2]} 
-                }
-            }`;
+            },
+            "color": {
+                "r": rgb[0], 
+                "g": rgb[1],
+                "b": rgb[2] 
+            }
+        }
+    };
+
+    return data;
 }
 
-async function GetBMPArray(id) {
-    let webBmp = '[64512,0,0,0,0,0,0,64512,0,64512,0,0,0,0,64512,0,0,0,64512,0,0,64512,0,0,0,0,0,64512,64512,0,0,0,0,0,0,64512,64512,0,0,0,0,0,64512,0,0,64512,0,0,0,64512,0,0,0,0,64512,0,64512,0,0,0,0,0,0,64512]';
+async function getBMPArray(id) {
+    let webBmp = [[64512,0,0,0,0,0,0,64512,0,64512,0,0,0,0,64512,0,0,0,64512,0,0,64512,0,0,0,0,0,64512,64512,0,0,0,0,0,0,64512,64512,0,0,0,0,0,64512,0,0,64512,0,0,0,64512,0,0,0,0,64512,0,64512,0,0,0,0,0,0,64512]];
 
     // Check if id is cached
     if (bmpCache[id]) {
@@ -262,10 +294,10 @@ async function GetBMPArray(id) {
 
         try {
             // Get id from API
-            let response = await axios.get('https://pixelit.bastelbunker.de/API/GetBMPByID/' + id, axiosConfigToPixelIt);
+            let response = await axios.get(`https://pixelit.bastelbunker.de/API/GetBMPByID/${id}`, axiosConfigToPixelIt);
 
             if (response.data && response.data.id && response.data.id != 0) {
-                webBmp = response.data.rgB565Array;
+                webBmp = JSON.parse(`[${response.data.rgB565Array}]`);              
                 // Add id to cache
                 bmpCache[id] = webBmp;
             }
@@ -276,6 +308,20 @@ async function GetBMPArray(id) {
     }
 
     return webBmp;
+}
+
+/**
+ * Create a function that maps a value to a range
+ * @param {Number} inMin Input range minimun value
+ * @param {Number} inMax Input range maximun value
+ * @param {Number} outMin Output range minimun value
+ * @param {Number} outMax Output range maximun value
+ * @return {function} A function that converts a value
+ */
+function createRemap(inMin, inMax, outMin, outMax) {
+    return function remaper(x) {
+        return Number(((x - inMin) * (outMax - outMin) / (inMax - inMin) + outMin).toFixed());
+    };
 }
 
 
