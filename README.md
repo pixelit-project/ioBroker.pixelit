@@ -28,6 +28,7 @@ Fill the IP and have fun :)
 -->
 ### __WORK IN PROGRESS__
 * (o0shojo0o) luminance remove decimals 
+* (o0shojo0o) add 'Show Clock' button
 
 ### 0.0.3 (2021-02-11)
 * (o0shojo0o) add brightness and code refactoring

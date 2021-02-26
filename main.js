@@ -76,6 +76,9 @@ class PixelIt extends utils.Adapter {
 
         // Subscribe Extended Message DataPoint
         this.subscribeStates('brightness_255');
+
+        // Subscribe Show Clock Button 
+        this.subscribeStates('show_clock');        
     }
 
     async onUnload(callback) {
@@ -127,7 +130,17 @@ class PixelIt extends utils.Adapter {
             this.setStateChangedAsync(adapter.namespace + '.brightness', reMap(state.val));
             data = {"brightness": state.val};
         }
-
+        else if (id === adapter.namespace + '.show_clock'){           
+            data = {
+                "clock": {
+                    "show": true,
+                    "switchAktiv": true,
+                    "withSeconds": false,
+                    "switchSec": 5      
+                }
+            };
+        }
+        
         this.log.debug(`data ${JSON.stringify(data)}`);
 
         try {
@@ -137,6 +150,7 @@ class PixelIt extends utils.Adapter {
                 ack: true
             });
 
+            // Sync DataPoints
             if (id.endsWith('.brightness_255')){
                 this.setStateChangedAsync(adapter.namespace + '.brightness', {
                     ack: true
