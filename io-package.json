@@ -52,28 +52,28 @@
                 "zh-cn": "首次出版"
             }
         },
-        "title": "PixelIt",
+        "title": "Pixel It",
         "titleLang": {
-            "en": "PixelIt",
-            "de": "PixelIt",
-            "ru": "PixelIt",
-            "pt": "PixelIt",
-            "nl": "PixelIt",
-            "fr": "PixelIt",
-            "it": "PixelIt",
-            "es": "PixelIt",
-            "pl": "PixelIt"
+            "en": "Pixel It",
+            "de": "Pixel It",
+            "ru": "Pixel It",
+            "pt": "Pixel It",
+            "nl": "Pixel It",
+            "fr": "Pixel It",
+            "it": "Pixel It",
+            "es": "Pixel It",
+            "pl": "Pixel It"
         },
         "desc": {
-            "en": "PixelIt",
-            "de": "PixelIt",
-            "ru": "PixelIt",
-            "pt": "PixelIt",
-            "nl": "PixelIt",
-            "fr": "PixelIt",
-            "it": "PixelIt",
-            "es": "PixelIt",
-            "pl": "PixelIt"
+            "en": "With this adapter, the Pixel It LED matrix displays can be addressed directly./nThe installed sensors are also queried and stored in ioBroker.",
+            "de": "Mit diesen Adapter kann das Pixel It LED Matrix Displays direkt angesprochen werden./nAuch die Verbauten Sensoren werden abgefragt und in ioBroker gespeichert.",
+            "ru": "С помощью этого адаптера можно напрямую обращаться к матричным светодиодным дисплеям Pixel It./nКроме того, установленные датчики опрашиваются и сохраняются в ioBroker.",
+            "pt": "Com este adaptador os Ecrãs Matriciais Pixel It LED podem ser endereçados directamente./nTambém os sensores instalados são consultados e armazenados no ioBroker.",
+            "nl": "Met deze adapter kunnen de Pixel It LED Matrix Displays direct worden aangesproken./nOok de geïnstalleerde sensoren worden opgevraagd en opgeslagen in ioBroker.",
+            "fr": "Avec cet adaptateur, les écrans matriciels LED Pixel It peuvent être adressés directement./nLes capteurs installés sont également interrogés et stockés dans ioBroker.",
+            "it": "Con questo adattatore i Pixel It LED Matrix Display possono essere indirizzati direttamente./nAnche i sensori installati vengono interrogati e memorizzati in ioBroker.",
+            "es": "Con este adaptador se pueden direccionar directamente las pantallas matriciales LED de Pixel It./nTambién se consultan los sensores instalados y se almacenan en ioBroker.",
+            "pl": "Za pomocą tego adaptera można bezpośrednio adresować wyświetlacze matrycowe Pixel It LED./nRównież zainstalowane czujniki są odpytywane i zapisywane w ioBroker."
         },
         "authors": [
             "Dennis Rathjen <info@bastelbunker.de>"
@@ -81,7 +81,7 @@
         "keywords": [
             "ioBroker",
             "template",
-            "Smart Home",
+            "smart home",
             "home automation",
             "pixel it",
             "pixelit"
@@ -99,7 +99,7 @@
         "type": "utility",
         "compact": true,
         "connectionType": "local",
-        "dataSource": "push",
+        "dataSource": "poll",
         "materialize": true,
         "dependencies": [
             {

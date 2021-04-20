@@ -102,16 +102,21 @@ class PixelIt extends utils.Adapter {
 
         let data;
 
-        if (id === adapter.namespace + '.message') {
+        if (id.endsWith('.message')){
             data = await createSimpleMessage(state.val);
         } 
-        else if (id === adapter.namespace + '.ext_message') {
-           try {
-                data = JSON.parse(state.val);            
-                if (data.bitmap && data.bitmap.data) {
+        else if (id.endsWith('.ext_message')){
+           try {                         
+                data = JSON.parse(state.val);    
+                if (data.bitmap && data.bitmap.data) {                    
                     // If only a BMP Id is passed, the BMP Array must be retrieved via API
-                    if (typeof data.bitmap.data === 'number') {
-                        data.bitmap.data = JSON.parse(await getBMPArray(data.bitmap.data));
+                    if (typeof data.bitmap.data == 'number') {                      
+                        data.bitmap.data = (await getBMPArray(data.bitmap.data))[0];                        
+                    }
+                } else  if (data.bitmapAnimation && data.bitmapAnimation.data) {                    
+                    // If only a BMP Id is passed, the BMP Array must be retrieved via API
+                    if (typeof data.bitmapAnimation.data == 'number') {
+                        data.bitmapAnimation.data = await getBMPArray(data.bitmapAnimation.data);
                     }
                 }
             } catch (err) {
@@ -119,24 +124,25 @@ class PixelIt extends utils.Adapter {
                return;
             }
         }
-        else if (id === adapter.namespace + '.brightness'){
+        else if (id.endsWith('.brightness')){
             // Create reMap 
             const reMap = createRemap(0, 100, 0, 255); 
-            this.setStateChangedAsync(adapter.namespace + '.brightness_255', reMap(state.val));
-            data = {"brightness": reMap(state.val)};
+            this.setStateChangedAsync(`${adapter.namespace}.brightness_255`, reMap(state.val));
+            data = {brightness: reMap(state.val)};
         }
-        else if (id === adapter.namespace + '.brightness_255'){
+        else if (id.endsWith('.brightness_255')){
+            // Create reMap 
             const reMap = createRemap(0, 255, 0, 100);  
-            this.setStateChangedAsync(adapter.namespace + '.brightness', reMap(state.val));
-            data = {"brightness": state.val};
+            this.setStateChangedAsync(`${adapter.namespace}.brightness`, reMap(state.val));
+            data = {brightness: state.val};
         }
-        else if (id === adapter.namespace + '.show_clock'){           
+        else if (id.endsWith('.show_clock')){           
             data = {
-                "clock": {
-                    "show": true,
-                    "switchAktiv": true,
-                    "withSeconds": false,
-                    "switchSec": 5      
+                clock: {
+                    show: true,
+                    switchAktiv: true,
+                    withSeconds: false,
+                    switchSec: 5      
                 }
             };
         }
@@ -276,21 +282,21 @@ async function getTextJson(text, rgb) {
         rgb = [255, 255, 255];
     }
 
-    let data ={
-            "text":{
-                "textString": text, 
-                "bigFont": false, 
-                "scrollText": "auto",
-                "scrollTextDelay": 50, 
-                "centerText": false,
-                "position": {
-                    "x": 8,
-                    "y": 1
+    const data ={
+            text:{
+                textString: text, 
+                bigFont: false, 
+                scrollText: 'auto',
+                scrollTextDelay: 50, 
+                centerText: false,
+                position: {
+                    x: 8,
+                    y: 1
             },
-            "color": {
-                "r": rgb[0], 
-                "g": rgb[1],
-                "b": rgb[2] 
+            color: {
+                r: rgb[0], 
+                g: rgb[1],
+                b: rgb[2] 
             }
         }
     };
