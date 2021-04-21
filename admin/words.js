@@ -2,27 +2,8 @@
 'use strict';
 
 systemDictionary = {
-	'PixelIt adapter settings': {
-		'en': 'Adapter settings for PixelIt',
-		'de': 'Adaptereinstellungen für PixelIt',
-		'ru': 'Настройки адаптера для PixelIt',
-		'pt': 'Configurações do adaptador para PixelIt',
-		'nl': 'Adapterinstellingen voor PixelIt',
-		'fr': "Paramètres d'adaptateur pour PixelIt",
-		'it': "Impostazioni dell'adattatore per PixelIt",
-		'es': 'Ajustes del adaptador para PixelIt',
-		'pl': 'Ustawienia adaptera dla PixelIt'
-	},
-	'pixelItOptions': {
-		'en': 'PixelIt Options',
-		'de': 'PixelIt Einstellungen'
-	},
-	'ip': {
-		'en': 'IP-Address',
-		'de': 'IP-Adresse'
-	},
-	'pollinterval': {
-		'en': 'Polling interval (sec)',
-		'de': 'Abfrage-Intervall (sek)'
-	},
+    "PixelIt adapter settings": {                    "en": "Adapter settings for PixelIt",                    "de": "Adaptereinstellungen für PixelIt",                "ru": "Настройки адаптера для PixelIt",                  "pt": "Configurações do adaptador para PixelIt",         "nl": "Adapterinstellingen voor PixelIt",                "fr": "Paramètres d'adaptateur pour PixelIt",            "it": "Impostazioni dell'adattatore per PixelIt",        "es": "Ajustes del adaptador para PixelIt",              "pl": "Ustawienia adaptera dla PixelIt",                 "zh-cn": "PixelIt的适配器设置"},
+    "ip": {                                          "en": "IP-Address",                                      "de": "IP-Adresse",                                      "ru": "Айпи адрес",                                      "pt": "Endereço de IP",                                  "nl": "IP adres",                                        "fr": "Adresse IP",                                      "it": "Indirizzo IP",                                    "es": "Dirección IP",                                    "pl": "Adres IP",                                        "zh-cn": "IP地址"},
+    "pixelItOptions": {                              "en": "PixelIt Options",                                 "de": "PixelIt Einstellungen",                           "ru": "Параметры PixelIt",                               "pt": "Opções PixelIt",                                  "nl": "PixelIt-opties",                                  "fr": "Options PixelIt",                                 "it": "Opzioni PixelIt",                                 "es": "Opciones de PixelIt",                             "pl": "Opcje PixelIt",                                   "zh-cn": "PixelIt选项"},
+    "pollinterval": {                                "en": "Polling interval (sec)",                          "de": "Abfrage-Intervall (sek)",                         "ru": "Интервал опроса (сек)",                           "pt": "Intervalo de sondagem (s)",                       "nl": "Polling-interval (sec)",                          "fr": "Intervalle d'interrogation (sec)",                "it": "Intervallo di polling (sec)",                     "es": "Intervalo de sondeo (seg)",                       "pl": "Okres odpytywania (s)",                           "zh-cn": "轮询间隔（秒）"},
 };
