@@ -1,4 +1,5 @@
 ![Logo](admin/pixelit.png)
+
 # ioBroker.pixelit
 
 [![NPM version](http://img.shields.io/npm/v/iobroker.pixelit.svg)](https://www.npmjs.com/package/iobroker.pixelit)
@@ -10,39 +11,51 @@
 [![NPM](https://nodei.co/npm/iobroker.pixelit.png?downloads=true)](https://nodei.co/npm/iobroker.pixelit/)
 
 ## PixelIt adapter for ioBroker
-This adapter allows you to send from ioBroker Screen to [PixelIt](https://www.bastelbunker.de/pixel-it/).
-There are also data points for the optional sensors of [PixelIt](https://www.bastelbunker.de/pixel-it/), as well as the API of the [Pixel Gallery](https://pixelit.bastelbunker.de/PixelGallery) is implemented in the adapter.
+
+This adapter allows you to send from ioBroker Screen to [PixelIt](https://www.bastelbunker.de/pixel-it/).  
+There are also data points for the optional sensors of [PixelIt](https://www.bastelbunker.de/pixel-it/), as well as the API of the [Pixel Gallery](https://pixelit.bastelbunker.de/PixelGallery) is implemented in the adapter.  
+More information about the data points can be found in this [documentation](https://docs.bastelbunker.de/ioBroker_pixelit/).
 
 ## Configuration
+
 Create a new instance of the adapter
-Fill the IP and have fun :) 
+Fill the IP and have fun :)
 
 ## Changelog
+
 <!--
  https://github.com/AlCalzone/release-script#usage
     npm run release minor -- --all 0.9.8 -> 0.10.0
     npm run release patch -- --all 0.9.8 -> 0.9.9
-    npm run release prerelease beta -- --all v0.2.1 -> v0.2.2-beta.0  
+    npm run release prerelease beta -- --all v0.2.1 -> v0.2.2-beta.0
 	Placeholder for the next version (at the beginning of the line):
 	### __WORK IN PROGRESS__
 -->
-### __WORK IN PROGRESS__
-* (o0shojo0o) luminance remove decimals 
-* (o0shojo0o) add 'Show Clock' button
+
+### **WORK IN PROGRESS**
+
+- (o0shojo0o) code refactoring
+- (o0shojo0o) luminance remove decimals
+- (o0shojo0o) add 'Show Clock' button
 
 ### 0.0.3 (2021-02-11)
-* (o0shojo0o) add brightness and code refactoring
+
+- (o0shojo0o) add brightness and code refactoring
 
 ### 0.0.2 (2021-02-01)
-* (o0shojo0o) code refactoring and bugfixes 
+
+- (o0shojo0o) code refactoring and bugfixes
 
 ### 0.0.2-alpha.0 (2020-09-16)
-* (o0shojo0o) initial release
+
+- (o0shojo0o) initial release
 
 ### 0.0.1
-* (o0shojo0o) initial push
+
+- (o0shojo0o) initial push
 
 ## License
+
 MIT License
 
 Copyright (c) 2021 Dennis Rathjen <info@bastelbunker.de>
