@@ -106,7 +106,7 @@ class PixelIt extends utils.Adapter {
             data = await createSimpleMessage(state.val);
         } 
         else if (id.endsWith('.ext_message')){
-           try {                         
+           try {    
                 data = JSON.parse(state.val);    
                 if (data.bitmap && data.bitmap.data) {                    
                     // If only a BMP Id is passed, the BMP Array must be retrieved via API
