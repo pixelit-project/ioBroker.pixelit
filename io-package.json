@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "pixelit",
-        "version": "0.0.4",
+        "version": "0.0.5",
         "news": {
+            "0.0.5": {
+                "en": "fix datapoints roles",
+                "de": "Fixieren von Datenpunktrollen",
+                "ru": "исправить роли точек данных",
+                "pt": "corrigir funções de pontos de dados",
+                "nl": "repareer datapuntenrollen",
+                "fr": "fixer les rôles des points de données",
+                "it": "correggere i ruoli dei datapoint",
+                "es": "arreglar roles de puntos de datos",
+                "pl": "napraw role punktów danych",
+                "zh-cn": "修复数据点角色"
+            },
             "0.0.4": {
                 "en": "code refactoring\nluminance remove decimals\nadd 'Show Clock' button",
                 "de": "Code Refactoring\nLuminanz Dezimalstellen entfernen\nFügen Sie die Schaltfläche \"Uhr anzeigen\" hinzu",

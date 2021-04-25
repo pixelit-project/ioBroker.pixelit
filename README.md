@@ -32,6 +32,10 @@ Fill the IP and have fun :)
 	### __WORK IN PROGRESS__
 -->
 
+### 0.0.5 (2021-04-25)
+
+- (o0shojo0o) fix datapoints roles
+
 ### 0.0.4 (2021-04-25)
 
 - (o0shojo0o) code refactoring
