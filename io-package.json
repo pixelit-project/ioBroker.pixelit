@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "pixelit",
-        "version": "0.0.3",
+        "version": "0.0.4",
         "news": {
+            "0.0.4": {
+                "en": "code refactoring\nluminance remove decimals\nadd 'Show Clock' button",
+                "de": "Code Refactoring\nLuminanz Dezimalstellen entfernen\nFügen Sie die Schaltfläche \"Uhr anzeigen\" hinzu",
+                "ru": "рефакторинг кода\nяркость удалить десятичные дроби\nдобавить кнопку \"Показать часы\"",
+                "pt": "refatoração de código\nluminância remover decimais\nadicionar o botão 'Mostrar relógio'",
+                "nl": "code refactoring\nluminantie decimalen verwijderen\nvoeg de knop 'Klok weergeven' toe",
+                "fr": "refactoring de code\nluminance supprimer les décimales\najouter le bouton `` Afficher l'horloge ''",
+                "it": "refactoring del codice\nluminanza rimuove i decimali\naggiungere il pulsante \"Mostra orologio\"",
+                "es": "código de refactorización\nluminancia eliminar decimales\nagregar el botón 'Mostrar reloj'",
+                "pl": "Refaktoryzacja kodu\nluminancja usuwa ułamki dziesiętne\ndodaj przycisk „Pokaż zegar”",
+                "zh-cn": "代码重构\n亮度删除小数点\n添加“显示时钟”按钮"
+            },
             "0.0.3": {
                 "en": "add brightness and code refactoring",
                 "de": "Fügen Sie Helligkeit und Code-Refactoring hinzu",

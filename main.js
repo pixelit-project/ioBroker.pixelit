@@ -180,20 +180,20 @@ async function createSimpleMessage(input) {
 
     let data;
 
-    if (countElements === 1) {
+    if (countElements == 1) {
         data = await getTextJson(inputArray[0]);
     }
     if (countElements >= 2) {
         data = await getTextJson(inputArray[0], inputArray[1]);
     }
-    if (countElements >= 3) {
+    if (countElements == 3) {
         const webBmp = await getBMPArray(inputArray[2]);
 
         data.bitmapAnimation = {                       
-            "data": webBmp,
-            "animationDelay": 200,  
-            "rubberbanding": false, 
-            "limitLoops": 0
+            data: webBmp,
+            animationDelay: 200,  
+            rubberbanding: false, 
+            limitLoops: 0
         };    
     }
 

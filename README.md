@@ -32,7 +32,7 @@ Fill the IP and have fun :)
 	### __WORK IN PROGRESS__
 -->
 
-### **WORK IN PROGRESS**
+### 0.0.4 (2021-04-25)
 
 - (o0shojo0o) code refactoring
 - (o0shojo0o) luminance remove decimals
