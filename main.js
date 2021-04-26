@@ -71,10 +71,10 @@ class PixelIt extends utils.Adapter {
         // Subscribe Extended Message DataPoint
         this.subscribeStates('ext_message');
 
-        // Subscribe Extended Message DataPoint
+        // Subscribe Brightness DataPoint
         this.subscribeStates('brightness');
 
-        // Subscribe Extended Message DataPoint
+        // Subscribe Brightness 255 DataPoint
         this.subscribeStates('brightness_255');
 
         // Subscribe Show Clock Button 
