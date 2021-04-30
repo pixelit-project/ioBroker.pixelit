@@ -264,8 +264,8 @@ async function setDataPoints(msgObj) {
         }
 
         if (dataPoint) {   
-            if (key == 'lux') {
-                msgObj[key] = msgObj[key].toFixed();
+            if (['lux', 'wifiRSSI', 'wifiQuality'].indexOf(key) >= 0 ) {
+                msgObj[key] = Number(Number(msgObj[key]).toFixed());
             }   
             adapter.setStateChangedAsync(dataPoint.pointName, {
                 val: msgObj[key],
