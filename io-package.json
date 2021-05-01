@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "pixelit",
-        "version": "0.0.5",
+        "version": "0.0.6",
         "news": {
+            "0.0.6": {
+                "en": "bugfix wrong value type",
+                "de": "Bugfix falscher Werttyp",
+                "ru": "исправление ошибки неправильного типа значения",
+                "pt": "bug corrigido tipo de valor errado",
+                "nl": "bugfix verkeerde waarde type",
+                "fr": "correction de bogue type de valeur incorrect",
+                "it": "bugfix tipo di valore errato",
+                "es": "corrección de errores tipo de valor incorrecto",
+                "pl": "poprawka błędu zły typ wartości",
+                "zh-cn": "错误修正错误的值类型"
+            },
             "0.0.5": {
                 "en": "fix datapoints roles",
                 "de": "Fixieren von Datenpunktrollen",

@@ -32,31 +32,35 @@ Fill the IP and have fun :)
 	### __WORK IN PROGRESS__
 -->
 
+### 0.0.6 (2021-05-01)
+
+-   (o0shojo0o) bugfix wrong value type
+
 ### 0.0.5 (2021-04-25)
 
-- (o0shojo0o) fix datapoints roles
+-   (o0shojo0o) fix datapoints roles
 
 ### 0.0.4 (2021-04-25)
 
-- (o0shojo0o) code refactoring
-- (o0shojo0o) luminance remove decimals
-- (o0shojo0o) add 'Show Clock' button
+-   (o0shojo0o) code refactoring
+-   (o0shojo0o) luminance remove decimals
+-   (o0shojo0o) add 'Show Clock' button
 
 ### 0.0.3 (2021-02-11)
 
-- (o0shojo0o) add brightness and code refactoring
+-   (o0shojo0o) add brightness and code refactoring
 
 ### 0.0.2 (2021-02-01)
 
-- (o0shojo0o) code refactoring and bugfixes
+-   (o0shojo0o) code refactoring and bugfixes
 
 ### 0.0.2-alpha.0 (2020-09-16)
 
-- (o0shojo0o) initial release
+-   (o0shojo0o) initial release
 
 ### 0.0.1
 
-- (o0shojo0o) initial push
+-   (o0shojo0o) initial push
 
 ## License
 
