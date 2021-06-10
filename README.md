@@ -32,6 +32,11 @@ Fill the IP and have fun :)
 	### __WORK IN PROGRESS__
 -->
 
+### **WORK IN PROGRESS**
+
+-   (o0shojo0o) added datapoints info.hostname, info.note, sensor.pressure
+-   (o0shojo0o) adjustments based on the adapter review
+
 ### 0.0.6 (2021-05-01)
 
 -   (o0shojo0o) bugfix wrong value type

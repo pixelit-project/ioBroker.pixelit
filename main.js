@@ -95,8 +95,8 @@ class PixelIt extends utils.Adapter {
         this.log.debug(`onStateChange-> id:${id} state:${JSON.stringify(state)}`);
 
         // Ingore Message with ack=true 
-        if (!state || state.from.includes('adapter.pixelit.')) {
-            this.log.debug(`onStateChange-> self triggered, change drop!`);
+        if (!state || state.ack == true) {
+            this.log.debug(`onStateChange-> ack is true, change does not need to be processed!`);
             return;
         }
 
@@ -127,13 +127,13 @@ class PixelIt extends utils.Adapter {
         else if (id.endsWith('.brightness')){
             // Create reMap 
             const reMap = createRemap(0, 100, 0, 255); 
-            this.setStateChangedAsync(`${adapter.namespace}.brightness_255`, reMap(state.val));
+            this.setStateChangedAsync(`${adapter.namespace}.brightness_255`, reMap(state.val), true);
             data = {brightness: reMap(state.val)};
         }
         else if (id.endsWith('.brightness_255')){
             // Create reMap 
             const reMap = createRemap(0, 255, 0, 100);  
-            this.setStateChangedAsync(`${adapter.namespace}.brightness`, reMap(state.val));
+            this.setStateChangedAsync(`${adapter.namespace}.brightness`, reMap(state.val), true);
             data = {brightness: state.val};
         }
         else if (id.endsWith('.show_clock')){           
@@ -151,23 +151,7 @@ class PixelIt extends utils.Adapter {
 
         try {
             await axios.post('http://' + pixelItAddress + '/api/screen', data, axiosConfigToPixelIt);
-
-            this.setStateChangedAsync(id, {
-                ack: true
-            });
-
-            // Sync DataPoints
-            if (id.endsWith('.brightness_255')){
-                this.setStateChangedAsync(adapter.namespace + '.brightness', {
-                    ack: true
-                });
-            }
-            else if (id.endsWith('.brightness')){
-                this.setStateChangedAsync(adapter.namespace + '.brightness_255', {
-                    ack: true
-                });
-            }
-
+            this.setStateChangedAsync(id, state.val, true);
         } catch (err) {}
     }
 }
@@ -230,10 +214,12 @@ async function requestAndWriteData() {
         const responses = await axios.all([
             // Get MatrixInfo
             axios.get('http://' + pixelItAddress + '/api/matrixinfo', axiosConfigToPixelIt),
-            // Get DHTSensor
-            axios.get('http://' + pixelItAddress + '/api/dhtsensor', axiosConfigToPixelIt),
+            // Get EnvironmentSensor
+            axios.get('http://' + pixelItAddress + '/api/sensor', axiosConfigToPixelIt),
             // Get LuxSensor
-            axios.get('http://' + pixelItAddress + '/api/luxsensor', axiosConfigToPixelIt)
+            axios.get('http://' + pixelItAddress + '/api/luxsensor', axiosConfigToPixelIt),
+            // Get current brightness
+            axios.get('http://' + pixelItAddress + '/api/brightness', axiosConfigToPixelIt)
         ]);
 
         // Set DataPoints
@@ -264,8 +250,10 @@ async function setDataPoints(msgObj) {
         }
 
         if (dataPoint) {   
-            if (['lux', 'wifiRSSI', 'wifiQuality'].indexOf(key) >= 0 ) {
-                msgObj[key] = Number(Number(msgObj[key]).toFixed());
+            if (['lux', 'wifiRSSI', 'wifiQuality', 'pressure'].indexOf(key) >= 0 ) {
+                if (typeof value == "number") {
+                    msgObj[key] = Math.round(Number(msgObj[key]));
+                }
             }   
             adapter.setStateChangedAsync(dataPoint.pointName, {
                 val: msgObj[key],
