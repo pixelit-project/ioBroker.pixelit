@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "pixelit",
-        "version": "0.0.6",
+        "version": "0.0.7",
         "news": {
+            "0.0.7": {
+                "en": "change UI to JSONConfig\nadded datapoints info.hostname, info.note, sensor.pressure\nadjustments based on the adapter review",
+                "de": "Ändern Sie die Benutzeroberfläche in JSONConfig\nDatenpunkte info.hostname, info.note, sensor.pressure hinzugefügt\nAnpassungen basierend auf der Adapterbewertung",
+                "ru": "изменить пользовательский интерфейс на JSONConfig\nдобавлены точки данных info.hostname, info.note, sensor.pressure\nкорректировки на основе обзора адаптера",
+                "pt": "alterar a IU para JSONConfig\nadicionados pontos de dados info.hostname, info.note, sensor.pressure\najustes com base na revisão do adaptador",
+                "nl": "verander gebruikersinterface in JSONConfig\ndatapunten toegevoegd info.hostname, info.note, sensor.pressure\naanpassingen op basis van de adapterbeoordeling",
+                "fr": "changer l'interface utilisateur en JSONConfig\npoints de données ajoutés info.hostname, info.note, sensor.pressure\najustements basés sur l'examen de l'adaptateur",
+                "it": "cambia l'interfaccia utente in JSONConfig\naggiunti datapoint info.hostname, info.note, sensor.pressure\nregolazioni basate sulla revisione dell'adattatore",
+                "es": "cambiar la interfaz de usuario a JSONConfig\npuntos de datos agregados info.hostname, info.note, sensor.pressure\najustes basados en la revisión del adaptador",
+                "pl": "zmień interfejs użytkownika na JSONConfig\ndodane punkty danych info.hostname, info.note, sensor.pressure\nkorekty na podstawie przeglądu adaptera",
+                "zh-cn": "将 UI 更改为 JSONConfig\n添加数据点 info.hostname、info.note、sensor.pressure\n基于适配器审查的调整"
+            },
             "0.0.6": {
                 "en": "bugfix wrong value type",
                 "de": "Bugfix falscher Werttyp",
@@ -143,7 +155,10 @@
             {
                 "js-controller": ">=2.0.0"
             }
-        ]
+        ],
+        "adminUI": {
+            "config": "json"
+        }
     },
     "native": {
         "ip": "",

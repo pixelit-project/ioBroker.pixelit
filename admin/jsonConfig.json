@@ -1,0 +1,21 @@
+{
+    "type": "panel",
+    "i18n": true,
+    "items": {
+        "ip": {
+            "newLine": true,
+            "type": "text",
+            "label": "IP address",
+            "sm": 12,
+            "md": 4,
+            "lg": 3
+        },
+        "pollinterval": {
+            "type": "number",
+            "label": "Poll Interval (sec.)",
+            "sm": 12,
+            "md": 4,
+            "lg": 3
+        }
+    }
+}

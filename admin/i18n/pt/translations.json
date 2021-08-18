@@ -1,6 +1,4 @@
 {
-    "PixelIt adapter settings": "Configurações do adaptador para PixelIt",
-    "ip": "Endereço de IP",
-    "pixelItOptions": "Opções PixelIt",
-    "pollinterval": "Intervalo de sondagem (s)"
+    "IP address": "endereço de IP",
+    "Poll Interval (sec.)": "Intervalo de sondagem (seg.)"
 }

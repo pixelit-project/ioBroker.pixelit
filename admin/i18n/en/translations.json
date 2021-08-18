@@ -1,6 +1,4 @@
 {
-    "PixelIt adapter settings": "Adapter settings for Pixel It",
-    "ip": "IP-Address",
-    "pixelItOptions": "Pixel It Options",
-    "pollinterval": "Polling interval (sec)"
+    "IP address": "IP address",
+    "Poll Interval (sec.)": "Poll Interval (sec.)"
 }
