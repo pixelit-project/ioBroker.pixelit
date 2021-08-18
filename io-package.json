@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "pixelit",
-        "version": "0.0.6",
+        "version": "0.0.7",
         "news": {
+            "0.0.7": {
+                "en": "change UI to JSONConfig\nadded datapoints info->hostname, info->note, sensor->pressure\nadjustments based on the adapter review",
+                "de": "Ändern Sie die Benutzeroberfläche in JSONConfig\nDatenpunkte hinzugefügt Info->Hostname, Info->Notiz, Sensor->Druck\nAnpassungen basierend auf der Adapterbewertung",
+                "ru": "изменить пользовательский интерфейс на JSONConfig\nдобавлены данные о точках данных -> имя хоста, информация -> примечание, датчик -> давление\nкорректировки на основе обзора адаптера",
+                "pt": "alterar a IU para JSONConfig\nadicionado pontos de dados info-> hostname, info-> nota, sensor-> pressão\najustes com base na revisão do adaptador",
+                "nl": "verander gebruikersinterface in JSONConfig\ndatapunten toegevoegd info->hostnaam, info->opmerking, sensor->druk\naanpassingen op basis van de adapterbeoordeling",
+                "fr": "changer l'interface utilisateur en JSONConfig\npoints de données ajoutés info->nom d'hôte, info->note, capteur->pression\najustements basés sur l'examen de l'adaptateur",
+                "it": "cambia l'interfaccia utente in JSONConfig\naggiunti datapoint info->hostname, info->note, sensor-> Pressure\nregolazioni basate sulla revisione dell'adattatore",
+                "es": "cambiar la interfaz de usuario a JSONConfig\ndatos agregados info-> nombre de host, información-> nota, sensor-> presión\najustes basados en la revisión del adaptador",
+                "pl": "zmień interfejs użytkownika na JSONConfig\ndodane punkty danych info->nazwa hosta, info->notatka, czujnik->ciśnienie\nkorekty na podstawie przeglądu adaptera",
+                "zh-cn": "将 UI 更改为 JSONConfig\n添加数据点信息->主机名、信息->注释、传感器->压力\n基于适配器审查的调整"
+            },
             "0.0.6": {
                 "en": "bugfix wrong value type",
                 "de": "Bugfix falscher Werttyp",
