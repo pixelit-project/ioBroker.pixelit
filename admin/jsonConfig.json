@@ -9,13 +9,6 @@
             "sm": 12,
             "md": 4,
             "lg": 3
-        },
-        "pollinterval": {
-            "type": "number",
-            "label": "Poll Interval (sec.)",
-            "sm": 12,
-            "md": 4,
-            "lg": 3
         }
     }
 }
