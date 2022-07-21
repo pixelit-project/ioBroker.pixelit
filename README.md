@@ -32,6 +32,12 @@ Fill the IP and have fun :)
 	### **WORK IN PROGRESS**
 -->
 
+### **WORK IN PROGRESS**
+
+-   (o0Shojo0o) change conncetion to websocket
+-   (o0Shojo0o) add buttons datapoints
+-   (o0Shojo0o) add sensor gas datapoint
+
 ### 0.0.8 (2021-08-19)
 
 -   (o0Shojo0o) fix translation
