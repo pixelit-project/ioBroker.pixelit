@@ -2,16 +2,25 @@
 
 const utils = require('@iobroker/adapter-core');
 const axios = require('axios');
+const WebSocket = require('ws');
 const adapterName = require('./package.json').name.split('.').pop();
 const dataPointsFolders = require('./lib/dataPointsFolders').dataPointsFolders;
 const infoDataPoints = require('./lib/infoDataPoints').infoDataPoints;
 const sensorDataPoints = require('./lib/sensorDataPoints').sensorDataPoints;
 const rootDataPoints = require('./lib/rootDataPoints').rootDataPoints;
+const buttonsDataPoints = require('./lib/buttonsDataPoints').buttonsDataPoints;
 
 let adapter;
 let pixelItAddress;
 let timerInterval;
 let requestTimout;
+let ws;
+let ping;
+let pingTimeout;
+let autoRestartTimeout;
+const wsHeartbeatIntervall = 10000;
+const restartTimeout = 1000;
+
 // Set axios Timeout 
 const axiosConfigToPixelIt = {
     timeout: 3000,
@@ -63,7 +72,7 @@ class PixelIt extends utils.Adapter {
         await createFolderAndDataPoints();
 
         // Request Data and write to DataPoints 
-        requestAndWriteData();
+        //requestAndWriteData();
 
         // Subscribe Message DataPoint
         this.subscribeStates('message');
@@ -78,13 +87,20 @@ class PixelIt extends utils.Adapter {
         this.subscribeStates('brightness_255');
 
         // Subscribe Show Clock Button 
-        this.subscribeStates('show_clock');        
+        this.subscribeStates('show_clock');
+
+        // Start Websocket
+        this.initWebsocket();
     }
 
     async onUnload(callback) {
         try {
-            clearTimeout(requestTimout);     
-            adapter.setStateChangedAsync('info.connection', false, true);   
+            clearTimeout(requestTimout);
+            this.clearTimeout(ping);
+            this.clearTimeout(pingTimeout);
+            this.clearTimeout(autoRestartTimeout);
+            // Reset adapter connection
+            this.setState("info.connection", false, true);
             callback();
         } catch (ex) {
             callback();
@@ -102,57 +118,134 @@ class PixelIt extends utils.Adapter {
 
         let data;
 
-        if (id.endsWith('.message')){
+        if (id.endsWith('.message')) {
             data = await createSimpleMessage(state.val);
-        } 
-        else if (id.endsWith('.ext_message')){
-           try {    
-                data = JSON.parse(state.val);    
-                if (data.bitmap && data.bitmap.data) {                    
+        }
+        else if (id.endsWith('.ext_message')) {
+            try {
+                data = JSON.parse(state.val);
+                if (data.bitmap && data.bitmap.data) {
                     // If only a BMP Id is passed, the BMP Array must be retrieved via API
-                    if (typeof data.bitmap.data == 'number') {                      
-                        data.bitmap.data = (await getBMPArray(data.bitmap.data))[0];                        
+                    if (typeof data.bitmap.data == 'number') {
+                        data.bitmap.data = (await getBMPArray(data.bitmap.data))[0];
                     }
-                } else  if (data.bitmapAnimation && data.bitmapAnimation.data) {                    
+                } else if (data.bitmapAnimation && data.bitmapAnimation.data) {
                     // If only a BMP Id is passed, the BMP Array must be retrieved via API
                     if (typeof data.bitmapAnimation.data == 'number') {
                         data.bitmapAnimation.data = await getBMPArray(data.bitmapAnimation.data);
                     }
                 }
             } catch (err) {
-               this.log.warn(`Cannot parse JSON from ext_message... ${state.val}`);
-               return;
+                this.log.warn(`Cannot parse JSON from ext_message... ${state.val}`);
+                return;
             }
         }
-        else if (id.endsWith('.brightness')){
+        else if (id.endsWith('.brightness')) {
             // Create reMap 
-            const reMap = createRemap(0, 100, 0, 255); 
+            const reMap = createRemap(0, 100, 0, 255);
             this.setStateChangedAsync(`${adapter.namespace}.brightness_255`, reMap(state.val), true);
-            data = {brightness: reMap(state.val)};
+            data = { brightness: reMap(state.val) };
         }
-        else if (id.endsWith('.brightness_255')){
+        else if (id.endsWith('.brightness_255')) {
             // Create reMap 
-            const reMap = createRemap(0, 255, 0, 100);  
+            const reMap = createRemap(0, 255, 0, 100);
             this.setStateChangedAsync(`${adapter.namespace}.brightness`, reMap(state.val), true);
-            data = {brightness: state.val};
+            data = { brightness: state.val };
         }
-        else if (id.endsWith('.show_clock')){           
+        else if (id.endsWith('.show_clock')) {
             data = {
                 clock: {
                     show: true,
                     switchAktiv: true,
                     withSeconds: false,
-                    switchSec: 5      
+                    switchSec: 5
                 }
             };
         }
-        
+
         this.log.debug(`data ${JSON.stringify(data)}`);
 
         try {
             await axios.post('http://' + pixelItAddress + '/api/screen', data, axiosConfigToPixelIt);
             this.setStateChangedAsync(id, state.val, true);
-        } catch (err) {}
+        } catch (err) { }
+    }
+
+    async initWebsocket() {
+        try {
+            // Set websocket connection
+            ws = new WebSocket(`ws://${pixelItAddress}:81`);
+        } catch (error) {
+            if (error.code === 'ETIMEDOUT') {
+                this.onReady();
+            }
+            this.log.warn(error);
+        }
+
+        // On connect
+        ws.on("open", () => {
+            this.log.debug("Websocket connectet");
+            // Set connection state
+            this.setState("info.connection", true, true);
+            this.log.info("Connect to server over websocket connection.");
+            // Send ping to server
+            this.sendPingToServer();
+            // Start Heartbeat
+            this.wsHeartbeat();
+
+        });
+
+
+        // Incomming messages
+        ws.on("message", async (message) => {
+            this.log.debug(`Incomming message: ${message}`);
+            const obj = JSON.parse(message);
+            const objName = Object.keys(obj)[0];
+            // No Logs
+            if (objName != 'log') {
+                setDataPoints(obj[objName]);
+            }
+        });
+
+        // On Close
+        ws.on("close", () => {
+            this.setState("info.connection", false, true);
+            this.log.warn("Websocket disconnectet");
+            clearTimeout(ping);
+            clearTimeout(pingTimeout);
+
+            if (ws.readyState === WebSocket.CLOSED) {
+                this.autoRestart();
+            }
+        });
+
+        // Pong from Server
+        ws.on("pong", () => {
+            this.log.debug("Receive pong from server");
+            this.wsHeartbeat();
+        });
+    }
+    async sendPingToServer() {
+        this.log.debug("Send ping to server");
+        ws.ping("iobroker.traccar");
+        ping = setTimeout(() => {
+            this.sendPingToServer();
+        }, wsHeartbeatIntervall);
+    }
+
+    async wsHeartbeat() {
+        clearTimeout(pingTimeout);
+        pingTimeout = setTimeout(() => {
+            this.log.debug("Websocked connection timed out");
+            ws.terminate();
+        }, wsHeartbeatIntervall + 1000);
+    }
+
+    async autoRestart() {
+        this.log.debug(`Start try again in ${restartTimeout / 1000} seconds...`);
+        autoRestartTimeout = setTimeout(() => {
+            this.onReady();
+        }, restartTimeout);
     }
 }
 
@@ -173,12 +266,12 @@ async function createSimpleMessage(input) {
     if (countElements == 3) {
         const webBmp = await getBMPArray(inputArray[2]);
 
-        data.bitmapAnimation = {                       
+        data.bitmapAnimation = {
             data: webBmp,
-            animationDelay: 200,  
-            rubberbanding: false, 
+            animationDelay: 200,
+            rubberbanding: false,
             limitLoops: 0
-        };    
+        };
     }
 
     adapter.log.debug(`createSimpleMessage-> idata:${JSON.stringify(data)}`);
@@ -205,41 +298,51 @@ async function createFolderAndDataPoints() {
     for (let key in sensorDataPoints) {
         await adapter.setObjectNotExistsAsync(sensorDataPoints[key].pointName, sensorDataPoints[key].point);
     };
+
+    // Create Button DataPoints       
+    for (let key in buttonsDataPoints) {
+        await adapter.setObjectNotExistsAsync(buttonsDataPoints[key].pointName, buttonsDataPoints[key].point);
+    };
 }
 
-async function requestAndWriteData() {
-    let adapterOnline = true;
+// async function requestAndWriteData() {
+//     let adapterOnline = true;
 
-    try {
-        const responses = await axios.all([
-            // Get MatrixInfo
-            axios.get('http://' + pixelItAddress + '/api/matrixinfo', axiosConfigToPixelIt),
-            // Get EnvironmentSensor
-            axios.get('http://' + pixelItAddress + '/api/sensor', axiosConfigToPixelIt),
-            // Get LuxSensor
-            axios.get('http://' + pixelItAddress + '/api/luxsensor', axiosConfigToPixelIt),
-            // Get current brightness
-            axios.get('http://' + pixelItAddress + '/api/brightness', axiosConfigToPixelIt)
-        ]);
+//     try {
+//         const responses = await axios.all([
+//             // Get MatrixInfo
+//             axios.get('http://' + pixelItAddress + '/api/matrixinfo', axiosConfigToPixelIt),
+//             // Get EnvironmentSensor
+//             axios.get('http://' + pixelItAddress + '/api/sensor', axiosConfigToPixelIt),
+//             // Get LuxSensor
+//             axios.get('http://' + pixelItAddress + '/api/luxsensor', axiosConfigToPixelIt),
+//             // Get current brightness
+//             axios.get('http://' + pixelItAddress + '/api/brightness', axiosConfigToPixelIt)
+//         ]);
 
-        // Set DataPoints
-        for (var key in responses) {
-            setDataPoints(responses[key].data);
-        }        
-    } catch (err) {
-        adapterOnline = false;
-    }
+//         // Set DataPoints
+//         for (var key in responses) {
+//             setDataPoints(responses[key].data);
+//         }
+//     } catch (err) {
+//         adapterOnline = false;
+//     }
 
-    // Set Alive DataPoint
-    adapter.setStateChangedAsync('info.connection', adapterOnline, true);
+//     // Set Alive DataPoint
+//     adapter.setStateChangedAsync('info.connection', adapterOnline, true);
 
-    clearTimeout(requestTimout);
-    requestTimout = setTimeout(requestAndWriteData, timerInterval);
-}
+//     clearTimeout(requestTimout);
+//     requestTimout = setTimeout(requestAndWriteData, timerInterval);
+// }
 
 async function setDataPoints(msgObj) {
     for (let key in msgObj) {
+        //adapter.log.debug(`setDataPoints-> key:${key} value:${msgObj[key]}`);
         let dataPoint = infoDataPoints.find(x => x.msgObjName === key);
+
+        if (!dataPoint) {
+            dataPoint = buttonsDataPoints.find(x => x.msgObjName === key);
+        }
 
         if (!dataPoint) {
             dataPoint = sensorDataPoints.find(x => x.msgObjName === key);
@@ -249,12 +352,12 @@ async function setDataPoints(msgObj) {
             dataPoint = rootDataPoints.find(x => x.msgObjName === key);
         }
 
-        if (dataPoint) {   
-            if (['lux', 'wifiRSSI', 'wifiQuality', 'pressure'].indexOf(key) >= 0 ) {
+        if (dataPoint) {
+            if (['lux', 'wifiRSSI', 'wifiQuality', 'pressure'].indexOf(key) >= 0) {
                 if (typeof value == "number") {
                     msgObj[key] = Math.round(Number(msgObj[key]));
                 }
-            }   
+            }
             adapter.setStateChangedAsync(dataPoint.pointName, {
                 val: msgObj[key],
                 ack: true
@@ -270,21 +373,21 @@ async function getTextJson(text, rgb) {
         rgb = [255, 255, 255];
     }
 
-    const data ={
-            text:{
-                textString: text, 
-                bigFont: false, 
-                scrollText: 'auto',
-                scrollTextDelay: 50, 
-                centerText: false,
-                position: {
-                    x: 8,
-                    y: 1
+    const data = {
+        text: {
+            textString: text,
+            bigFont: false,
+            scrollText: 'auto',
+            scrollTextDelay: 50,
+            centerText: false,
+            position: {
+                x: 8,
+                y: 1
             },
             color: {
-                r: rgb[0], 
+                r: rgb[0],
                 g: rgb[1],
-                b: rgb[2] 
+                b: rgb[2]
             }
         }
     };
@@ -293,7 +396,7 @@ async function getTextJson(text, rgb) {
 }
 
 async function getBMPArray(id) {
-    let webBmp = [[64512,0,0,0,0,0,0,64512,0,64512,0,0,0,0,64512,0,0,0,64512,0,0,64512,0,0,0,0,0,64512,64512,0,0,0,0,0,0,64512,64512,0,0,0,0,0,64512,0,0,64512,0,0,0,64512,0,0,0,0,64512,0,64512,0,0,0,0,0,0,64512]];
+    let webBmp = [[64512, 0, 0, 0, 0, 0, 0, 64512, 0, 64512, 0, 0, 0, 0, 64512, 0, 0, 0, 64512, 0, 0, 64512, 0, 0, 0, 0, 0, 64512, 64512, 0, 0, 0, 0, 0, 0, 64512, 64512, 0, 0, 0, 0, 0, 64512, 0, 0, 64512, 0, 0, 0, 64512, 0, 0, 0, 0, 64512, 0, 64512, 0, 0, 0, 0, 0, 0, 64512]];
 
     // Check if id is cached
     if (bmpCache[id]) {
@@ -308,7 +411,7 @@ async function getBMPArray(id) {
             let response = await axios.get(`https://pixelit.bastelbunker.de/API/GetBMPByID/${id}`, axiosConfigToPixelIt);
 
             if (response.data && response.data.id && response.data.id != 0) {
-                webBmp = JSON.parse(`[${response.data.rgB565Array}]`);              
+                webBmp = JSON.parse(`[${response.data.rgB565Array}]`);
                 // Add id to cache
                 bmpCache[id] = webBmp;
             }
@@ -320,6 +423,7 @@ async function getBMPArray(id) {
 
     return webBmp;
 }
+
 
 /**
  * Create a function that maps a value to a range
