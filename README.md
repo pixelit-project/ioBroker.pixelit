@@ -32,7 +32,7 @@ Fill the IP and have fun :)
 	### **WORK IN PROGRESS**
 -->
 ### 0.1.0 (2022-07-22)
-
+**!!! Breaking changes works only with PixelIt v1.0.0 and higher !!!**
 -   (o0Shojo0o) change conncetion to websocket
 -   (o0Shojo0o) add buttons datapoints
 -   (o0Shojo0o) add sensor gas datapoint
