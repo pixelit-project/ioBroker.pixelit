@@ -5,9 +5,7 @@
 [![NPM version](http://img.shields.io/npm/v/iobroker.pixelit.svg)](https://www.npmjs.com/package/iobroker.pixelit)
 [![Downloads](https://img.shields.io/npm/dm/iobroker.pixelit.svg)](https://www.npmjs.com/package/iobroker.pixelit)
 ![Number of Installations (latest)](http://iobroker.live/badges/pixelit-installed.svg)
-![Number of Installations (stable)](http://iobroker.live/badges/pixelit-stable.svg)
-[![Dependency Status](https://img.shields.io/david/o0shojo0o/iobroker.pixelit.svg)](https://david-dm.org/o0shojo0o/iobroker.pixelit)
-
+![Number of Installations (stable)](http://iobroker.live/badges/pixelit-stable.svg)  
 [![NPM](https://nodei.co/npm/iobroker.pixelit.png?downloads=true)](https://nodei.co/npm/iobroker.pixelit/)
 
 ## PixelIt adapter for ioBroker
