@@ -1,203 +1,179 @@
 {
-    "common": {
-        "name": "pixelit",
-        "version": "0.0.8",
-        "news": {
-            "0.0.8": {
-                "en": "fix translation",
-                "de": "Übersetzung korrigieren",
-                "ru": "исправить перевод",
-                "pt": "corrigir tradução",
-                "nl": "vertaling repareren",
-                "fr": "corriger la traduction",
-                "it": "correggere la traduzione",
-                "es": "arreglar traducción",
-                "pl": "napraw tłumaczenie",
-                "zh-cn": "修复翻译"
-            },
-            "0.0.7": {
-                "en": "change UI to JSONConfig\nadded datapoints info->hostname, info->note, sensor->pressure\nadjustments based on the adapter review",
-                "de": "Ändern Sie die Benutzeroberfläche in JSONConfig\nDatenpunkte hinzugefügt Info->Hostname, Info->Notiz, Sensor->Druck\nAnpassungen basierend auf der Adapterbewertung",
-                "ru": "изменить пользовательский интерфейс на JSONConfig\nдобавлены данные о точках данных -> имя хоста, информация -> примечание, датчик -> давление\nкорректировки на основе обзора адаптера",
-                "pt": "alterar a IU para JSONConfig\nadicionado pontos de dados info-> hostname, info-> nota, sensor-> pressão\najustes com base na revisão do adaptador",
-                "nl": "verander gebruikersinterface in JSONConfig\ndatapunten toegevoegd info->hostnaam, info->opmerking, sensor->druk\naanpassingen op basis van de adapterbeoordeling",
-                "fr": "changer l'interface utilisateur en JSONConfig\npoints de données ajoutés info->nom d'hôte, info->note, capteur->pression\najustements basés sur l'examen de l'adaptateur",
-                "it": "cambia l'interfaccia utente in JSONConfig\naggiunti datapoint info->hostname, info->note, sensor-> Pressure\nregolazioni basate sulla revisione dell'adattatore",
-                "es": "cambiar la interfaz de usuario a JSONConfig\ndatos agregados info-> nombre de host, información-> nota, sensor-> presión\najustes basados en la revisión del adaptador",
-                "pl": "zmień interfejs użytkownika na JSONConfig\ndodane punkty danych info->nazwa hosta, info->notatka, czujnik->ciśnienie\nkorekty na podstawie przeglądu adaptera",
-                "zh-cn": "将 UI 更改为 JSONConfig\n添加数据点信息->主机名、信息->注释、传感器->压力\n基于适配器审查的调整"
-            },
-            "0.0.6": {
-                "en": "bugfix wrong value type",
-                "de": "Bugfix falscher Werttyp",
-                "ru": "исправление ошибки неправильного типа значения",
-                "pt": "bug corrigido tipo de valor errado",
-                "nl": "bugfix verkeerde waarde type",
-                "fr": "correction de bogue type de valeur incorrect",
-                "it": "bugfix tipo di valore errato",
-                "es": "corrección de errores tipo de valor incorrecto",
-                "pl": "poprawka błędu zły typ wartości",
-                "zh-cn": "错误修正错误的值类型"
-            },
-            "0.0.5": {
-                "en": "fix datapoints roles",
-                "de": "Fixieren von Datenpunktrollen",
-                "ru": "исправить роли точек данных",
-                "pt": "corrigir funções de pontos de dados",
-                "nl": "repareer datapuntenrollen",
-                "fr": "fixer les rôles des points de données",
-                "it": "correggere i ruoli dei datapoint",
-                "es": "arreglar roles de puntos de datos",
-                "pl": "napraw role punktów danych",
-                "zh-cn": "修复数据点角色"
-            },
-            "0.0.4": {
-                "en": "code refactoring\nluminance remove decimals\nadd 'Show Clock' button",
-                "de": "Code Refactoring\nLuminanz Dezimalstellen entfernen\nFügen Sie die Schaltfläche \"Uhr anzeigen\" hinzu",
-                "ru": "рефакторинг кода\nяркость удалить десятичные дроби\nдобавить кнопку \"Показать часы\"",
-                "pt": "refatoração de código\nluminância remover decimais\nadicionar o botão 'Mostrar relógio'",
-                "nl": "code refactoring\nluminantie decimalen verwijderen\nvoeg de knop 'Klok weergeven' toe",
-                "fr": "refactoring de code\nluminance supprimer les décimales\najouter le bouton `` Afficher l'horloge ''",
-                "it": "refactoring del codice\nluminanza rimuove i decimali\naggiungere il pulsante \"Mostra orologio\"",
-                "es": "código de refactorización\nluminancia eliminar decimales\nagregar el botón 'Mostrar reloj'",
-                "pl": "Refaktoryzacja kodu\nluminancja usuwa ułamki dziesiętne\ndodaj przycisk „Pokaż zegar”",
-                "zh-cn": "代码重构\n亮度删除小数点\n添加“显示时钟”按钮"
-            },
-            "0.0.3": {
-                "en": "add brightness and code refactoring",
-                "de": "Fügen Sie Helligkeit und Code-Refactoring hinzu",
-                "ru": "добавить яркость и рефакторинг кода",
-                "pt": "adicionar brilho e refatoração de código",
-                "nl": "voeg helderheid en code refactoring toe",
-                "fr": "ajouter la luminosité et la refactorisation du code",
-                "it": "aggiungere luminosità e refactoring del codice",
-                "es": "agregar brillo y refactorización de código",
-                "pl": "dodać jasność i refaktoryzację kodu",
-                "zh-cn": "增加亮度和代码重构"
-            },
-            "0.0.2": {
-                "en": "code refactoring and bugfixes",
-                "de": "Code Refactoring und Bugfixes",
-                "ru": "рефакторинг кода и исправления",
-                "pt": "refatoração de código e correções de bugs",
-                "nl": "code refactoring en bugfixes",
-                "fr": "refactoring de code et corrections de bugs",
-                "it": "refactoring del codice e correzioni di bug",
-                "es": "refactorización de código y corrección de errores",
-                "pl": "refaktoryzacja kodu i poprawki błędów",
-                "zh-cn": "代码重构和错误修正"
-            },
-            "0.0.2-alpha.0": {
-                "en": "initial release",
-                "de": "Erstveröffentlichung",
-                "ru": "изначальный выпуск",
-                "pt": "lançamento inicial",
-                "nl": "Eerste uitgave",
-                "fr": "Première version",
-                "it": "Versione iniziale",
-                "es": "Versión inicial",
-                "pl": "Pierwsze wydanie",
-                "zh-cn": "初始发行"
-            },
-            "0.0.1": {
-                "en": "initial release",
-                "de": "Erstveröffentlichung",
-                "ru": "Начальная версия",
-                "pt": "lançamento inicial",
-                "nl": "Eerste uitgave",
-                "fr": "Première version",
-                "it": "Versione iniziale",
-                "es": "Versión inicial",
-                "pl": "Pierwsze wydanie",
-                "zh-cn": "首次出版"
-            }
-        },
-        "title": "Pixel It",
-        "titleLang": {
-            "en": "Pixel It",
-            "de": "Pixel It",
-            "ru": "Pixel It",
-            "pt": "Pixel It",
-            "nl": "Pixel It",
-            "fr": "Pixel It",
-            "it": "Pixel It",
-            "es": "Pixel It",
-            "pl": "Pixel It",
-            "zh-cn": "像素化"
-        },
-        "desc": {
-            "en": "With this adapter, the Pixel It LED matrix displays can be addressed directly./nThe installed sensors are also queried and stored in ioBroker.",
-            "de": "Mit diesen Adapter kann das Pixel It LED Matrix Displays direkt angesprochen werden./nAuch die Verbauten Sensoren werden abgefragt und in ioBroker gespeichert.",
-            "ru": "С помощью этого адаптера можно напрямую обращаться к матричным светодиодным дисплеям Pixel It./nКроме того, установленные датчики опрашиваются и сохраняются в ioBroker.",
-            "pt": "Com este adaptador os Ecrãs Matriciais Pixel It LED podem ser endereçados directamente./nTambém os sensores instalados são consultados e armazenados no ioBroker.",
-            "nl": "Met deze adapter kunnen de Pixel It LED Matrix Displays direct worden aangesproken./nOok de geïnstalleerde sensoren worden opgevraagd en opgeslagen in ioBroker.",
-            "fr": "Avec cet adaptateur, les écrans matriciels LED Pixel It peuvent être adressés directement./nLes capteurs installés sont également interrogés et stockés dans ioBroker.",
-            "it": "Con questo adattatore i Pixel It LED Matrix Display possono essere indirizzati direttamente./nAnche i sensori installati vengono interrogati e memorizzati in ioBroker.",
-            "es": "Con este adaptador se pueden direccionar directamente las pantallas matriciales LED de Pixel It./nTambién se consultan los sensores instalados y se almacenan en ioBroker.",
-            "pl": "Za pomocą tego adaptera można bezpośrednio adresować wyświetlacze matrycowe Pixel It LED./nRównież zainstalowane czujniki są odpytywane i zapisywane w ioBroker.",
-            "zh-cn": "使用此适配器，可以直接寻址Pixel It LED矩阵显示器。/n还可以查询已安装的传感器并将其存储在ioBroker中。"
-        },
-        "authors": [
-            "Dennis Rathjen <info@bastelbunker.de>"
-        ],
-        "keywords": [
-            "ioBroker",
-            "template",
-            "smart home",
-            "home automation",
-            "pixel it",
-            "pixelit"
-        ],
-        "logTransporter": true,
-        "license": "MIT",
-        "platform": "Javascript/Node.js",
-        "main": "main.js",
-        "icon": "pixelit.png",
-        "enabled": true,
-        "extIcon": "https://raw.githubusercontent.com/o0shojo0o/ioBroker.pixelit/master/admin/pixelit.png",
-        "readme": "https://github.com/o0shojo0o/ioBroker.pixelit/blob/master/README.md",
-        "loglevel": "info",
-        "mode": "daemon",
-        "type": "hardware",
-        "compact": true,
-        "connectionType": "local",
-        "dataSource": "poll",
-        "materialize": true,
-        "dependencies": [
-            {
-                "js-controller": ">=2.0.0"
-            }
-        ],
-        "adminUI": {
-            "config": "json"
-        }
+  "common": {
+    "name": "pixelit",
+    "version": "0.1.0",
+    "news": {
+      "0.1.0": {
+        "en": "change conncetion to websocket\nadd buttons datapoints\nadd sensor gas datapoint",
+        "de": "konzession zu websocket ändern\nhinzufügen von buttons\nsensorgas-datenpunkt",
+        "ru": "изменить conncetion в websocket\nдобавить кнопки данных точек\nдобавьте датчик газовой точки",
+        "pt": "mudar de connceção para websocket\nadicionar botões datapoints\nadicionar datapoint do gás do sensor",
+        "nl": "veranderingsverbinding met websocket\nvoeg knopen toe\nvoeg sensorgas toe",
+        "fr": "changement de conncetion à websocket\najouter des boutons datapoints\najouter le point de données de gaz du capteur",
+        "it": "cambiare conncetion a websocket\naggiungere i punti dati dei pulsanti\naggiungere il datapoint del gas del sensore",
+        "es": "cambio de connceción a websocket\nañadir botones puntos de datos\nañadir datos de gas sensor",
+        "pl": "zmienianie się w stronę internetową\nprzycisk danych\ndostarczanie czujnego punktu danych sensora",
+        "zh-cn": "网站的改变\n增加但有数据点\n增加传感器数据"
+      },
+      "0.0.8": {
+        "en": "fix translation",
+        "de": "Übersetzung korrigieren",
+        "ru": "исправить перевод",
+        "pt": "corrigir tradução",
+        "nl": "vertaling repareren",
+        "fr": "corriger la traduction",
+        "it": "correggere la traduzione",
+        "es": "arreglar traducción",
+        "pl": "napraw tłumaczenie",
+        "zh-cn": "修复翻译"
+      },
+      "0.0.7": {
+        "en": "change UI to JSONConfig\nadded datapoints info->hostname, info->note, sensor->pressure\nadjustments based on the adapter review",
+        "de": "Ändern Sie die Benutzeroberfläche in JSONConfig\nDatenpunkte hinzugefügt Info->Hostname, Info->Notiz, Sensor->Druck\nAnpassungen basierend auf der Adapterbewertung",
+        "ru": "изменить пользовательский интерфейс на JSONConfig\nдобавлены данные о точках данных -> имя хоста, информация -> примечание, датчик -> давление\nкорректировки на основе обзора адаптера",
+        "pt": "alterar a IU para JSONConfig\nadicionado pontos de dados info-> hostname, info-> nota, sensor-> pressão\najustes com base na revisão do adaptador",
+        "nl": "verander gebruikersinterface in JSONConfig\ndatapunten toegevoegd info->hostnaam, info->opmerking, sensor->druk\naanpassingen op basis van de adapterbeoordeling",
+        "fr": "changer l'interface utilisateur en JSONConfig\npoints de données ajoutés info->nom d'hôte, info->note, capteur->pression\najustements basés sur l'examen de l'adaptateur",
+        "it": "cambia l'interfaccia utente in JSONConfig\naggiunti datapoint info->hostname, info->note, sensor-> Pressure\nregolazioni basate sulla revisione dell'adattatore",
+        "es": "cambiar la interfaz de usuario a JSONConfig\ndatos agregados info-> nombre de host, información-> nota, sensor-> presión\najustes basados en la revisión del adaptador",
+        "pl": "zmień interfejs użytkownika na JSONConfig\ndodane punkty danych info->nazwa hosta, info->notatka, czujnik->ciśnienie\nkorekty na podstawie przeglądu adaptera",
+        "zh-cn": "将 UI 更改为 JSONConfig\n添加数据点信息->主机名、信息->注释、传感器->压力\n基于适配器审查的调整"
+      },
+      "0.0.6": {
+        "en": "bugfix wrong value type",
+        "de": "Bugfix falscher Werttyp",
+        "ru": "исправление ошибки неправильного типа значения",
+        "pt": "bug corrigido tipo de valor errado",
+        "nl": "bugfix verkeerde waarde type",
+        "fr": "correction de bogue type de valeur incorrect",
+        "it": "bugfix tipo di valore errato",
+        "es": "corrección de errores tipo de valor incorrecto",
+        "pl": "poprawka błędu zły typ wartości",
+        "zh-cn": "错误修正错误的值类型"
+      },
+      "0.0.5": {
+        "en": "fix datapoints roles",
+        "de": "Fixieren von Datenpunktrollen",
+        "ru": "исправить роли точек данных",
+        "pt": "corrigir funções de pontos de dados",
+        "nl": "repareer datapuntenrollen",
+        "fr": "fixer les rôles des points de données",
+        "it": "correggere i ruoli dei datapoint",
+        "es": "arreglar roles de puntos de datos",
+        "pl": "napraw role punktów danych",
+        "zh-cn": "修复数据点角色"
+      },
+      "0.0.4": {
+        "en": "code refactoring\nluminance remove decimals\nadd 'Show Clock' button",
+        "de": "Code Refactoring\nLuminanz Dezimalstellen entfernen\nFügen Sie die Schaltfläche \"Uhr anzeigen\" hinzu",
+        "ru": "рефакторинг кода\nяркость удалить десятичные дроби\nдобавить кнопку \"Показать часы\"",
+        "pt": "refatoração de código\nluminância remover decimais\nadicionar o botão 'Mostrar relógio'",
+        "nl": "code refactoring\nluminantie decimalen verwijderen\nvoeg de knop 'Klok weergeven' toe",
+        "fr": "refactoring de code\nluminance supprimer les décimales\najouter le bouton `` Afficher l'horloge ''",
+        "it": "refactoring del codice\nluminanza rimuove i decimali\naggiungere il pulsante \"Mostra orologio\"",
+        "es": "código de refactorización\nluminancia eliminar decimales\nagregar el botón 'Mostrar reloj'",
+        "pl": "Refaktoryzacja kodu\nluminancja usuwa ułamki dziesiętne\ndodaj przycisk „Pokaż zegar”",
+        "zh-cn": "代码重构\n亮度删除小数点\n添加“显示时钟”按钮"
+      },
+      "0.0.3": {
+        "en": "add brightness and code refactoring",
+        "de": "Fügen Sie Helligkeit und Code-Refactoring hinzu",
+        "ru": "добавить яркость и рефакторинг кода",
+        "pt": "adicionar brilho e refatoração de código",
+        "nl": "voeg helderheid en code refactoring toe",
+        "fr": "ajouter la luminosité et la refactorisation du code",
+        "it": "aggiungere luminosità e refactoring del codice",
+        "es": "agregar brillo y refactorización de código",
+        "pl": "dodać jasność i refaktoryzację kodu",
+        "zh-cn": "增加亮度和代码重构"
+      }
     },
-    "native": {
-        "ip": "",
-        "pollinterval": 5
+    "title": "Pixel It",
+    "titleLang": {
+      "en": "Pixel It",
+      "de": "Pixel It",
+      "ru": "Pixel It",
+      "pt": "Pixel It",
+      "nl": "Pixel It",
+      "fr": "Pixel It",
+      "it": "Pixel It",
+      "es": "Pixel It",
+      "pl": "Pixel It",
+      "zh-cn": "像素化"
     },
-    "objects": [],
-    "instanceObjects": [
-        {
-            "_id": "info",
-            "type": "channel",
-            "common": {
-                "name": "Information"
-            },
-            "native": {}
-        },
-        {
-            "_id": "info.connection",
-            "type": "state",
-            "common": {
-                "role": "indicator.connected",
-                "name": "Device or service connected",
-                "type": "boolean",
-                "read": true,
-                "write": false,
-                "def": false
-            },
-            "native": {}
-        }
-    ]
+    "desc": {
+      "en": "With this adapter, the Pixel It LED matrix displays can be addressed directly./nThe installed sensors are also queried and stored in ioBroker.",
+      "de": "Mit diesen Adapter kann das Pixel It LED Matrix Displays direkt angesprochen werden./nAuch die Verbauten Sensoren werden abgefragt und in ioBroker gespeichert.",
+      "ru": "С помощью этого адаптера можно напрямую обращаться к матричным светодиодным дисплеям Pixel It./nКроме того, установленные датчики опрашиваются и сохраняются в ioBroker.",
+      "pt": "Com este adaptador os Ecrãs Matriciais Pixel It LED podem ser endereçados directamente./nTambém os sensores instalados são consultados e armazenados no ioBroker.",
+      "nl": "Met deze adapter kunnen de Pixel It LED Matrix Displays direct worden aangesproken./nOok de geïnstalleerde sensoren worden opgevraagd en opgeslagen in ioBroker.",
+      "fr": "Avec cet adaptateur, les écrans matriciels LED Pixel It peuvent être adressés directement./nLes capteurs installés sont également interrogés et stockés dans ioBroker.",
+      "it": "Con questo adattatore i Pixel It LED Matrix Display possono essere indirizzati direttamente./nAnche i sensori installati vengono interrogati e memorizzati in ioBroker.",
+      "es": "Con este adaptador se pueden direccionar directamente las pantallas matriciales LED de Pixel It./nTambién se consultan los sensores instalados y se almacenan en ioBroker.",
+      "pl": "Za pomocą tego adaptera można bezpośrednio adresować wyświetlacze matrycowe Pixel It LED./nRównież zainstalowane czujniki są odpytywane i zapisywane w ioBroker.",
+      "zh-cn": "使用此适配器，可以直接寻址Pixel It LED矩阵显示器。/n还可以查询已安装的传感器并将其存储在ioBroker中。"
+    },
+    "authors": [
+      "Dennis Rathjen <info@bastelbunker.de>"
+    ],
+    "keywords": [
+      "ioBroker",
+      "template",
+      "smart home",
+      "home automation",
+      "pixel it",
+      "pixelit"
+    ],
+    "logTransporter": true,
+    "license": "MIT",
+    "platform": "Javascript/Node.js",
+    "main": "main.js",
+    "icon": "pixelit.png",
+    "enabled": true,
+    "extIcon": "https://raw.githubusercontent.com/o0shojo0o/ioBroker.pixelit/master/admin/pixelit.png",
+    "readme": "https://github.com/o0shojo0o/ioBroker.pixelit/blob/master/README.md",
+    "loglevel": "info",
+    "mode": "daemon",
+    "type": "hardware",
+    "compact": true,
+    "connectionType": "local",
+    "dataSource": "poll",
+    "materialize": true,
+    "dependencies": [
+      {
+        "js-controller": ">=2.0.0"
+      }
+    ],
+    "adminUI": {
+      "config": "json"
+    }
+  },
+  "native": {
+    "ip": "",
+    "pollinterval": 5
+  },
+  "objects": [],
+  "instanceObjects": [
+    {
+      "_id": "info",
+      "type": "channel",
+      "common": {
+        "name": "Information"
+      },
+      "native": {}
+    },
+    {
+      "_id": "info.connection",
+      "type": "state",
+      "common": {
+        "role": "indicator.connected",
+        "name": "Device or service connected",
+        "type": "boolean",
+        "read": true,
+        "write": false,
+        "def": false
+      },
+      "native": {}
+    }
+  ]
 }

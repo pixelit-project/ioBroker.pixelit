@@ -12,7 +12,6 @@ const buttonsDataPoints = require('./lib/buttonsDataPoints').buttonsDataPoints;
 
 let adapter;
 let pixelItAddress;
-let timerInterval;
 let requestTimout;
 let ws;
 let ping;
@@ -20,6 +19,7 @@ let pingTimeout;
 let autoRestartTimeout;
 const wsHeartbeatIntervall = 10000;
 const restartTimeout = 1000;
+const apiURL = 'https://pixelit.bastelbunker.de/API/GetBMPByID/';
 
 // Set axios Timeout 
 const axiosConfigToPixelIt = {
@@ -49,7 +49,6 @@ class PixelIt extends utils.Adapter {
 
         // Get Config
         pixelItAddress = this.config.ip;
-        timerInterval = this.config.pollinterval;
 
         // Check Server address
         if (!pixelItAddress || pixelItAddress === '') {
@@ -57,22 +56,10 @@ class PixelIt extends utils.Adapter {
             return;
         }
 
-        // Check TimerInterval
-        if (!timerInterval || timerInterval === '') {
-            this.log.warn('PixelIt polling interval not set, please check your settings!')
-            return;
-        }
-
         this.setStateChangedAsync('info.connection', false, true);
-
-        // Seconds to milliseconds
-        timerInterval = timerInterval * 1000;
 
         // Create Folder and DataPoints
         await createFolderAndDataPoints();
-
-        // Request Data and write to DataPoints 
-        //requestAndWriteData();
 
         // Subscribe Message DataPoint
         this.subscribeStates('message');
@@ -100,7 +87,7 @@ class PixelIt extends utils.Adapter {
             this.clearTimeout(pingTimeout);
             this.clearTimeout(autoRestartTimeout);
             // Reset adapter connection
-            this.setState("info.connection", false, true);
+            this.setState('info.connection', false, true);
             callback();
         } catch (ex) {
             callback();
@@ -111,7 +98,7 @@ class PixelIt extends utils.Adapter {
         this.log.debug(`onStateChange-> id:${id} state:${JSON.stringify(state)}`);
 
         // Ingore Message with ack=true 
-        if (!state || state.ack == true) {
+        if (!state || (state.ack == true && !(state.from.startsWith('system.adapter.pixelit') && id.endsWith('.brightness_255')))) {
             this.log.debug(`onStateChange-> ack is true, change does not need to be processed!`);
             return;
         }
@@ -172,32 +159,30 @@ class PixelIt extends utils.Adapter {
     }
 
     async initWebsocket() {
-        try {
-            // Set websocket connection
-            ws = new WebSocket(`ws://${pixelItAddress}:81`);
-        } catch (error) {
-            if (error.code === 'ETIMEDOUT') {
-                this.onReady();
+        // Set websocket connection
+        ws = new WebSocket(`ws://${pixelItAddress}:81`);
+
+        // On error
+        ws.on('error', (err) => {
+            if (!err.message.includes('ETIMEDOUT')) {
+                this.log.warn(err);
             }
-            this.log.warn(error);
-        }
+        });
 
         // On connect
-        ws.on("open", () => {
-            this.log.debug("Websocket connectet");
+        ws.on('open', () => {
+            this.log.debug('Websocket connectet');
             // Set connection state
-            this.setState("info.connection", true, true);
-            this.log.info("Connect to server over websocket connection.");
+            this.setState('info.connection', true, true);
+            this.log.info('Connect to PixelIt over websocket.');
             // Send ping to server
             this.sendPingToServer();
             // Start Heartbeat
             this.wsHeartbeat();
-
         });
 
-
         // Incomming messages
-        ws.on("message", async (message) => {
+        ws.on('message', async (message) => {
             this.log.debug(`Incomming message: ${message}`);
             const obj = JSON.parse(message);
             const objName = Object.keys(obj)[0];
@@ -208,9 +193,9 @@ class PixelIt extends utils.Adapter {
         });
 
         // On Close
-        ws.on("close", () => {
-            this.setState("info.connection", false, true);
-            this.log.warn("Websocket disconnectet");
+        ws.on('close', () => {
+            this.setState('info.connection', false, true);
+            this.log.debug('Websocket disconnectet');
             clearTimeout(ping);
             clearTimeout(pingTimeout);
 
@@ -220,14 +205,15 @@ class PixelIt extends utils.Adapter {
         });
 
         // Pong from Server
-        ws.on("pong", () => {
-            this.log.debug("Receive pong from server");
+        ws.on('pong', () => {
+            this.log.debug('Receive pong from server');
             this.wsHeartbeat();
         });
     }
+
     async sendPingToServer() {
-        this.log.debug("Send ping to server");
-        ws.ping("iobroker.traccar");
+        this.log.debug('Send ping to server');
+        ws.ping('iobroker.pixelit');
         ping = setTimeout(() => {
             this.sendPingToServer();
         }, wsHeartbeatIntervall);
@@ -236,15 +222,15 @@ class PixelIt extends utils.Adapter {
     async wsHeartbeat() {
         clearTimeout(pingTimeout);
         pingTimeout = setTimeout(() => {
-            this.log.debug("Websocked connection timed out");
+            this.log.debug('Websocked connection timed out');
             ws.terminate();
         }, wsHeartbeatIntervall + 1000);
     }
 
     async autoRestart() {
-        this.log.debug(`Start try again in ${restartTimeout / 1000} seconds...`);
+        this.log.debug(`Reconnect attempt in ${restartTimeout / 1000} seconds..`);
         autoRestartTimeout = setTimeout(() => {
-            this.onReady();
+            this.initWebsocket();
         }, restartTimeout);
     }
 }
@@ -305,39 +291,8 @@ async function createFolderAndDataPoints() {
     };
 }
 
-// async function requestAndWriteData() {
-//     let adapterOnline = true;
-
-//     try {
-//         const responses = await axios.all([
-//             // Get MatrixInfo
-//             axios.get('http://' + pixelItAddress + '/api/matrixinfo', axiosConfigToPixelIt),
-//             // Get EnvironmentSensor
-//             axios.get('http://' + pixelItAddress + '/api/sensor', axiosConfigToPixelIt),
-//             // Get LuxSensor
-//             axios.get('http://' + pixelItAddress + '/api/luxsensor', axiosConfigToPixelIt),
-//             // Get current brightness
-//             axios.get('http://' + pixelItAddress + '/api/brightness', axiosConfigToPixelIt)
-//         ]);
-
-//         // Set DataPoints
-//         for (var key in responses) {
-//             setDataPoints(responses[key].data);
-//         }
-//     } catch (err) {
-//         adapterOnline = false;
-//     }
-
-//     // Set Alive DataPoint
-//     adapter.setStateChangedAsync('info.connection', adapterOnline, true);
-
-//     clearTimeout(requestTimout);
-//     requestTimout = setTimeout(requestAndWriteData, timerInterval);
-// }
-
 async function setDataPoints(msgObj) {
     for (let key in msgObj) {
-        //adapter.log.debug(`setDataPoints-> key:${key} value:${msgObj[key]}`);
         let dataPoint = infoDataPoints.find(x => x.msgObjName === key);
 
         if (!dataPoint) {
@@ -354,7 +309,7 @@ async function setDataPoints(msgObj) {
 
         if (dataPoint) {
             if (['lux', 'wifiRSSI', 'wifiQuality', 'pressure'].indexOf(key) >= 0) {
-                if (typeof value == "number") {
+                if (typeof value == 'number') {
                     msgObj[key] = Math.round(Number(msgObj[key]));
                 }
             }
@@ -408,7 +363,7 @@ async function getBMPArray(id) {
 
         try {
             // Get id from API
-            let response = await axios.get(`https://pixelit.bastelbunker.de/API/GetBMPByID/${id}`, axiosConfigToPixelIt);
+            let response = await axios.get(`${apiURL}${id}`, axiosConfigToPixelIt);
 
             if (response.data && response.data.id && response.data.id != 0) {
                 webBmp = JSON.parse(`[${response.data.rgB565Array}]`);
@@ -424,7 +379,6 @@ async function getBMPArray(id) {
     return webBmp;
 }
 
-
 /**
  * Create a function that maps a value to a range
  * @param {Number} inMin Input range minimun value
@@ -438,7 +392,6 @@ function createRemap(inMin, inMax, outMin, outMax) {
         return Number(((x - inMin) * (outMax - outMin) / (inMax - inMin) + outMin).toFixed());
     };
 }
-
 
 if (module.parent) {
     module.exports = (options) => new PixelIt(options);
