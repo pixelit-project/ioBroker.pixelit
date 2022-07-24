@@ -130,6 +130,7 @@
     "main": "main.js",
     "icon": "pixelit.png",
     "enabled": true,
+    "localLink": "http://%ip%",
     "extIcon": "https://raw.githubusercontent.com/o0shojo0o/ioBroker.pixelit/master/admin/pixelit.png",
     "readme": "https://github.com/o0shojo0o/ioBroker.pixelit/blob/master/README.md",
     "loglevel": "info",
@@ -137,11 +138,64 @@
     "type": "hardware",
     "compact": true,
     "connectionType": "local",
-    "dataSource": "poll",
+    "dataSource": "push",
     "materialize": true,
     "dependencies": [
       {
         "js-controller": ">=2.0.0"
+      }
+    ],
+    "messages": [
+      {
+        "condition": {
+          "operand": "and",
+          "rules": [
+            "oldVersion<0.1.0",
+            "newVersion>=0.1.0"
+          ]
+        },
+        "title": {
+          "en": "Important notice!",
+          "de": "Wichtiger Hinweis!",
+          "ru": "Важное замечание!",
+          "pt": "Notícia importante!",
+          "nl": "Belangrijke mededeling!",
+          "fr": "Avis important!",
+          "it": "Avviso IMPORTANTE!",
+          "es": "Noticia importante!",
+          "pl": "Ważna uwaga!",
+          "zh-cn": "重要通知!"
+        },
+        "text": {
+          "en": "This version requires at least firmware version 1.0.0 of the PixelIt.",
+          "de": "Diese Version erfordert mindestens Firmware-Version 1.0.0 des PixelIt.",
+          "ru": "Эта версия требует как минимум прошивки версии 1.0.0 из PixelIt.",
+          "pt": "Esta versão requer pelo menos a versão de firmware 1.0.0 do PixelIt.",
+          "nl": "Deze versie vereist minstens stevigware versie 1.0.0 van de Pixelit.",
+          "fr": "Cette version nécessite au moins la version de firmware 1.0.0 du PixelIt.",
+          "it": "Questa versione richiede almeno la versione del firmware 1.0.0 del PixelIt.",
+          "es": "Esta versión requiere al menos la versión de firmware 1.0.0 del PixelIt.",
+          "pl": "Wersja ta wymaga co najmniej poprawnej wersji oprogramowania 1.0.0 PixelIt.",
+          "zh-cn": "这本版本至少需要PixelItttt软件版本1.0.0。"
+        },
+        "link": "https://github.com/o0shojo0o/PixelIt#100-2022-07-22",
+        "level": "warn",
+        "linkText": {
+          "en": "More",
+          "de": "Mehr",
+          "ru": "Больше",
+          "pt": "Mais",
+          "nl": "Meer",
+          "fr": "Plus",
+          "it": "Altro",
+          "es": "Más",
+          "pl": "Więcej",
+          "zh-cn": "增加"
+        },
+        "buttons": [
+          "agree",
+          "cancel"
+        ]
       }
     ],
     "adminUI": {
@@ -149,8 +203,7 @@
     }
   },
   "native": {
-    "ip": "",
-    "pollinterval": 5
+    "ip": ""
   },
   "objects": [],
   "instanceObjects": [
