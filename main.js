@@ -164,7 +164,7 @@ class PixelIt extends utils.Adapter {
 
         // On error
         ws.on('error', (err) => {
-            if (!err.message.includes('ETIMEDOUT')) {
+            if (!err.message.includes('ETIMEDOUT') && !err.message.includes('EHOSTUNREACH')) {
                 this.log.warn(err);
             }
         });
