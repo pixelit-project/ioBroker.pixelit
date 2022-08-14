@@ -131,8 +131,8 @@
     "icon": "pixelit.png",
     "enabled": true,
     "localLink": "http://%ip%",
-    "extIcon": "https://raw.githubusercontent.com/o0shojo0o/ioBroker.pixelit/master/admin/pixelit.png",
-    "readme": "https://github.com/o0shojo0o/ioBroker.pixelit/blob/master/README.md",
+    "extIcon": "https://raw.githubusercontent.com/pixelit-project/ioBroker.pixelit/master/admin/pixelit.png",
+    "readme": "https://github.com/pixelit-project/ioBroker.pixelit/blob/master/README.md",
     "loglevel": "info",
     "mode": "daemon",
     "type": "hardware",
@@ -178,7 +178,7 @@
           "pl": "Wersja ta wymaga co najmniej poprawnej wersji oprogramowania 1.0.0 PixelIt.",
           "zh-cn": "这本版本至少需要PixelItttt软件版本1.0.0。"
         },
-        "link": "https://github.com/o0shojo0o/PixelIt#100-2022-07-22",
+        "link": "https://github.com/pixelit-project/PixelIt#100-2022-07-22",
         "level": "warn",
         "linkText": {
           "en": "More",

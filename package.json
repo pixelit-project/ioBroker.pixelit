@@ -6,7 +6,7 @@
     "name": "Dennis Hinzpeter",
     "email": "info@bastelbunker.de"
   },
-  "homepage": "https://github.com/o0shojo0o/ioBroker.pixelit",
+  "homepage": "https://github.com/pixelit-project/ioBroker.pixelit",
   "license": "MIT",
   "keywords": [
     "ioBroker",
@@ -16,7 +16,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/o0shojo0o/ioBroker.pixelit"
+    "url": "https://github.com/pixelit-project/ioBroker.pixelit"
   },
   "dependencies": {
     "@iobroker/adapter-core": "^2.5.1",
@@ -57,7 +57,7 @@
     "release": "release-script"
   },
   "bugs": {
-    "url": "https://github.com/o0shojo0o/ioBroker.pixelit/issues"
+    "url": "https://github.com/pixelit-project/ioBroker.pixelit/issues"
   },
   "readmeFilename": "README.md"
 }
