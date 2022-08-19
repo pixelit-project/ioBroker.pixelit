@@ -76,6 +76,9 @@ class PixelIt extends utils.Adapter {
         // Subscribe Show Clock Button 
         this.subscribeStates('show_clock');
 
+        // Subscribe Sleep Mode DataPoint 
+        this.subscribeStates('sleep_mode');
+
         // Start Websocket
         this.initWebsocket();
     }
@@ -102,7 +105,6 @@ class PixelIt extends utils.Adapter {
             this.log.debug(`onStateChange-> ack is true, change does not need to be processed!`);
             return;
         }
-
         let data;
 
         if (id.endsWith('.message')) {
@@ -148,6 +150,9 @@ class PixelIt extends utils.Adapter {
                     switchSec: 5
                 }
             };
+        }
+        else if (id.endsWith('.sleep_mode')) {
+            data = { sleepMode: state.val };
         }
 
         this.log.debug(`data ${JSON.stringify(data)}`);
