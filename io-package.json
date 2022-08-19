@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "pixelit",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "news": {
+      "0.2.0": {
+        "en": "added sleep_mode state",
+        "de": "hinzugefügt sleep_mode state",
+        "ru": "добавленное состояние sleep_mode",
+        "pt": "adicionado sleep_mode estado",
+        "nl": "voegde slaapmodus toe",
+        "fr": "état dorm_mode ajouté",
+        "it": "aggiunto stato sleep_mode",
+        "es": "estado de sueño_mode",
+        "pl": "stan snu",
+        "zh-cn": "增加睡觉"
+      },
       "0.1.0": {
         "en": "change conncetion to websocket\nadd buttons datapoints\nadd sensor gas datapoint",
         "de": "konzession zu websocket ändern\nhinzufügen von buttons\nsensorgas-datenpunkt",
@@ -74,18 +86,6 @@
         "es": "código de refactorización\nluminancia eliminar decimales\nagregar el botón 'Mostrar reloj'",
         "pl": "Refaktoryzacja kodu\nluminancja usuwa ułamki dziesiętne\ndodaj przycisk „Pokaż zegar”",
         "zh-cn": "代码重构\n亮度删除小数点\n添加“显示时钟”按钮"
-      },
-      "0.0.3": {
-        "en": "add brightness and code refactoring",
-        "de": "Fügen Sie Helligkeit und Code-Refactoring hinzu",
-        "ru": "добавить яркость и рефакторинг кода",
-        "pt": "adicionar brilho e refatoração de código",
-        "nl": "voeg helderheid en code refactoring toe",
-        "fr": "ajouter la luminosité et la refactorisation du code",
-        "it": "aggiungere luminosità e refactoring del codice",
-        "es": "agregar brillo y refactorización de código",
-        "pl": "dodać jasność i refaktoryzację kodu",
-        "zh-cn": "增加亮度和代码重构"
       }
     },
     "title": "Pixel It",
