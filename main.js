@@ -143,12 +143,7 @@ class PixelIt extends utils.Adapter {
         }
         else if (id.endsWith('.show_clock')) {
             data = {
-                clock: {
-                    show: true,
-                    switchAktiv: true,
-                    withSeconds: false,
-                    switchSec: 5
-                }
+                clock: {}
             };
         }
         else if (id.endsWith('.sleep_mode')) {
