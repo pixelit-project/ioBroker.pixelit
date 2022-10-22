@@ -30,6 +30,11 @@ Fill the IP and have fun :)
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+
+### **WORK IN PROGRESS**
+**!!! Breaking changes works only with PixelIt v2.1.3 and higher !!!**
+- (d4rkd3v1l)  removed parameters from "show_clock" call
+
 ### 0.2.0 (2022-08-19)
 
 -   (o0Shojo0o) added sleep_mode state
