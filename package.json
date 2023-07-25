@@ -9,10 +9,9 @@
   "homepage": "https://github.com/pixelit-project/ioBroker.pixelit",
   "license": "MIT",
   "keywords": [
-    "ioBroker",
-    "template",
-    "Smart Home",
-    "home automation"
+    "pixelit",
+    "dot matix",
+    "matrix array"
   ],
   "repository": {
     "type": "git",
