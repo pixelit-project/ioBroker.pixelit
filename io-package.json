@@ -130,7 +130,11 @@
     "main": "main.js",
     "icon": "pixelit.png",
     "enabled": true,
-    "localLink": "http://%ip%",
+    "localLinks": {
+      "_default": {
+        "link": "http://%ip%"
+      }
+    },
     "extIcon": "https://raw.githubusercontent.com/pixelit-project/ioBroker.pixelit/master/admin/pixelit.png",
     "readme": "https://github.com/pixelit-project/ioBroker.pixelit/blob/master/README.md",
     "loglevel": "info",
