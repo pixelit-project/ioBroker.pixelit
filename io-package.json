@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "pixelit",
-    "version": "0.2.0",
+    "version": "1.0.0",
     "news": {
+      "1.0.0": {
+        "en": "*!!! Breaking changes works only with PixelIt v2.1.3 and higher !!!**\n\nremoved parameters from \"show_clock\" call\nfix \"iob Adapter Checker\" issues",
+        "de": "*!!! Bruchänderungen funktionieren nur mit PixelIt v2.1.3 und höher!!!**\n\nentfernte parameter von show_clock call\nbeheben \"iob Adapter Checker\" Probleme",
+        "ru": "*!!! Перерыв изменений работает только с PixelIt v2.1.3 и выше !!!**\n\nудалены параметры из show_clock call\nисправить \"iob Adapter Checker\" проблемы",
+        "pt": "*!!! A quebra de mudanças funciona apenas com PixelIt v2.1.3 e superior !!!**\n\nparâmetros removidos da chamada show_clock\ncorrigir problemas de \"iob Adapter Checker\"",
+        "nl": "♪ Veranderingen werken alleen met Pixelt v2.1.3 en hoger\n\nverwijderde parameters van show call\nmaak \"iob Adapter Checker\" problemen",
+        "fr": "*!!! Les changements de rupture ne fonctionnent que avec PixelIt v2.1.3 et plus !!!**\n\nparamètres supprimés de l'appel show_clock\ncorrection des problèmes \"Ob Adaptateur Checker\"",
+        "it": "# I cambiamenti di rottura funzionano solo con PixelIt v2.1.3 e superiore ******\n\nparametri rimossi dalla chiamata show_clock\nrisolvere problemi \"iob Adapter Checker\"",
+        "es": "*!!! Los cambios de ruptura funcionan sólo con PixelIt v2.1.3 y superior !!!**\n\nlos parámetros eliminados de la llamada show_clock\nsolucionar problemas de \"ob Adapter Checker\"",
+        "pl": "! Zmienione zmiany są tylko z PixelIt v2.1.3 i wyższym!\n\nusunąć parametry z program_clock\n\"Iob Adapter Checker\" (ang.)",
+        "uk": "* Передача змін працює тільки з PixelIt v2.1.3 і вище !!!*\n\nвидалити параметри з виклику show_clock\nвиправити \"iob Перевірити адаптер\" проблеми",
+        "zh-cn": "页:1 打破变化只与PixelIt诉2.1.3和\n\n摘自显示的参数:锁定呼吁\nfix “iob Adapter Checker”问题"
+      },
       "0.2.0": {
         "en": "added sleep_mode state",
         "de": "hinzugefügt sleep_mode state",
@@ -74,18 +87,6 @@
         "es": "arreglar roles de puntos de datos",
         "pl": "napraw role punktów danych",
         "zh-cn": "修复数据点角色"
-      },
-      "0.0.4": {
-        "en": "code refactoring\nluminance remove decimals\nadd 'Show Clock' button",
-        "de": "Code Refactoring\nLuminanz Dezimalstellen entfernen\nFügen Sie die Schaltfläche \"Uhr anzeigen\" hinzu",
-        "ru": "рефакторинг кода\nяркость удалить десятичные дроби\nдобавить кнопку \"Показать часы\"",
-        "pt": "refatoração de código\nluminância remover decimais\nadicionar o botão 'Mostrar relógio'",
-        "nl": "code refactoring\nluminantie decimalen verwijderen\nvoeg de knop 'Klok weergeven' toe",
-        "fr": "refactoring de code\nluminance supprimer les décimales\najouter le bouton `` Afficher l'horloge ''",
-        "it": "refactoring del codice\nluminanza rimuove i decimali\naggiungere il pulsante \"Mostra orologio\"",
-        "es": "código de refactorización\nluminancia eliminar decimales\nagregar el botón 'Mostrar reloj'",
-        "pl": "Refaktoryzacja kodu\nluminancja usuwa ułamki dziesiętne\ndodaj przycisk „Pokaż zegar”",
-        "zh-cn": "代码重构\n亮度删除小数点\n添加“显示时钟”按钮"
       }
     },
     "titleLang": {
