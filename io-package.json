@@ -122,7 +122,7 @@
       "uk": "За допомогою цього адаптера можна адресувати напряму світлодіодні дисплеї Pixel It./nУстановлені датчики також запитуються та зберігаються в ioBroker."
     },
     "authors": [
-      "Dennis Rathjen <info@bastelbunker.de>"
+      "Dennis Rathjen <dennis.rathjen@outlook.de>"
     ],
     "keywords": [
       "pixelit",
@@ -212,6 +212,22 @@
     ],
     "adminUI": {
       "config": "json"
+    },
+    "adminTab": {
+      "name": {
+        "en": "PixelIt",
+        "de": "PixelIt",
+        "ru": "PixelIt",
+        "pt": "PixelIt",
+        "nl": "PixelIt",
+        "fr": "PixelIt",
+        "it": "PixelIt",
+        "es": "PixelIt",
+        "pl": "PixelIt",
+        "zh-cn": "PixelIt"
+      },
+      "link": "http://%ip%",
+      "fa-icon": "</i><img style='width:24px;margin-bottom:-6px;' src='/adapter/pixelit/pixelit.png'><i>"
     }
   },
   "native": {
