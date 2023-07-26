@@ -30,6 +30,11 @@ Fill the IP and have fun :)
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+
+### **WORK IN PROGRESS**
+
+-   (o0Shojo0o) added adminTab
+
 ### 1.0.0 (2023-07-25)
 **!!! Breaking changes works only with PixelIt v2.1.3 and higher !!!**
 
@@ -91,7 +96,7 @@ Fill the IP and have fun :)
 
 MIT License
 
-Copyright (c) 2023 Dennis Rathjen <info@bastelbunker.de>
+Copyright (c) 2023 Dennis Rathjen <dennis.rathjen@outlook.de>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
