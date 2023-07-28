@@ -99,60 +99,69 @@ class PixelIt extends utils.Adapter {
 
     async onStateChange(id, state) {
         this.log.debug(`onStateChange-> id:${id} state:${JSON.stringify(state)}`);
+        let reMap;
 
         // Ingore Message with ack=true 
-        if (!state || (state.ack == true && !(state.from.startsWith('system.adapter.pixelit') && id.endsWith('.brightness_255')))) {
-            this.log.debug(`onStateChange-> ack is true, change does not need to be processed!`);
-            return;
+        if (!state || state.ack == true) {
+            switch (id) {
+                case `${adapter.namespace}.brightness_255`:
+                    reMap = createRemap(0, 255, 0, 100);
+                    this.setStateChangedAsync(`${adapter.namespace}.brightness`, reMap(state.val), true);
+                    return;
+                case `${adapter.namespace}.brightness`:
+                    reMap = createRemap(0, 100, 0, 255);
+                    this.setStateChangedAsync(`${adapter.namespace}.brightness_255`, reMap(state.val), true);
+                    return;
+                default:
+                    this.log.debug(`onStateChange-> ack is true, change does not need to be processed!`);
+                    return;
+            }
         }
         let data;
 
-        if (id.endsWith('.message')) {
-            data = await createSimpleMessage(state.val);
-        }
-        else if (id.endsWith('.ext_message')) {
-            try {
-                data = JSON.parse(state.val);
-                if (data.bitmap && data.bitmap.data) {
-                    // If only a BMP Id is passed, the BMP Array must be retrieved via API
-                    if (typeof data.bitmap.data == 'number') {
-                        data.bitmap.data = (await getBMPArray(data.bitmap.data))[0];
+        switch (id) {
+            case `${adapter.namespace}.message`:
+                data = await createSimpleMessage(state.val);
+                break;
+            case `${adapter.namespace}.ext_message`:
+                try {
+                    data = JSON.parse(state.val);
+                    if (data.bitmap && data.bitmap.data) {
+                        // If only a BMP Id is passed, the BMP Array must be retrieved via API
+                        if (typeof data.bitmap.data == 'number') {
+                            data.bitmap.data = (await getBMPArray(data.bitmap.data))[0];
+                        }
+                    } else if (data.bitmapAnimation && data.bitmapAnimation.data) {
+                        // If only a BMP Id is passed, the BMP Array must be retrieved via API
+                        if (typeof data.bitmapAnimation.data == 'number') {
+                            data.bitmapAnimation.data = await getBMPArray(data.bitmapAnimation.data);
+                        }
                     }
-                } else if (data.bitmapAnimation && data.bitmapAnimation.data) {
-                    // If only a BMP Id is passed, the BMP Array must be retrieved via API
-                    if (typeof data.bitmapAnimation.data == 'number') {
-                        data.bitmapAnimation.data = await getBMPArray(data.bitmapAnimation.data);
-                    }
+                } catch (err) {
+                    this.log.warn(`Cannot parse JSON from ext_message... ${state.val}`);
+                    return;
                 }
-            } catch (err) {
-                this.log.warn(`Cannot parse JSON from ext_message... ${state.val}`);
-                return;
-            }
-        }
-        else if (id.endsWith('.brightness')) {
-            // Create reMap 
-            const reMap = createRemap(0, 100, 0, 255);
-            this.setStateChangedAsync(`${adapter.namespace}.brightness_255`, reMap(state.val), true);
-            data = { brightness: reMap(state.val) };
-        }
-        else if (id.endsWith('.brightness_255')) {
-            // Create reMap 
-            const reMap = createRemap(0, 255, 0, 100);
-            this.setStateChangedAsync(`${adapter.namespace}.brightness`, reMap(state.val), true);
-            data = { brightness: state.val };
-        }
-        else if (id.endsWith('.show_clock')) {
-            data = {
-                clock: {}
-            };
-        }
-        else if (id.endsWith('.sleep_mode')) {
-            data = { sleepMode: state.val };
+                break;
+            case `${adapter.namespace}.brightness`:
+                // Create reMap 
+                reMap = createRemap(0, 100, 0, 255);
+                data = { brightness: reMap(state.val) };
+                break;
+            case `${adapter.namespace}.brightness_255`:
+                // Create reMap 
+                reMap = createRemap(0, 255, 0, 100);
+                data = { brightness: state.val };
+                break;
+            case `${adapter.namespace}.sleep_mode`:
+                data = { sleepMode: state.val };
+                break;
+
         }
 
-        this.log.debug(`data ${JSON.stringify(data)}`);
+        this.log.debug(`Send message --->: ${JSON.stringify(data)}`);
 
         try {
+
             await axios.post('http://' + pixelItAddress + '/api/screen', data, axiosConfigToPixelIt);
             this.setStateChangedAsync(id, state.val, true);
         } catch (err) { }
@@ -183,7 +192,7 @@ class PixelIt extends utils.Adapter {
 
         // Incomming messages
         ws.on('message', async (message) => {
-            this.log.debug(`Incomming message: ${message}`);
+            this.log.debug(`Incomming message <---: ${message}`);
             const obj = JSON.parse(message);
             const objName = Object.keys(obj)[0];
             // No Logs
