@@ -30,6 +30,10 @@ Fill the IP and have fun :)
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### 1.1.1 (2023-07-28)
+
+-   (o0Shojo0o) fix `brightness` and `brightness_255` handling
+
 ### 1.1.0 (2023-07-26)
 
 -   (o0Shojo0o) added adminTab

@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "pixelit",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "news": {
+      "1.1.1": {
+        "en": "fix `brightness` and `brightness_255` handling",
+        "de": "korrektur der helligkeit und helligkeit_255 handhabung",
+        "ru": "исправить яркость и яркость_255 обработки",
+        "pt": "corrigir brilho e brilho_255 manipulação",
+        "nl": "verhelder de helderheid en helderheid",
+        "fr": "réparer la luminosité et la luminosité_255 manipulation",
+        "it": "correzione della luminosità e della luminosità_255",
+        "es": "fijar brillo y brillo_255 manipulación",
+        "pl": "osiągnięcie jasności i jasności _255",
+        "uk": "фіксація яскравості та яскравості_255 обробки",
+        "zh-cn": "fix 光明和光明:255 处理"
+      },
       "1.1.0": {
         "en": "added adminTab",
         "de": "adminTab",
@@ -80,19 +93,6 @@
         "pl": "zmień interfejs użytkownika na JSONConfig\ndodane punkty danych info->nazwa hosta, info->notatka, czujnik->ciśnienie\nkorekty na podstawie przeglądu adaptera",
         "zh-cn": "将 UI 更改为 JSONConfig\n添加数据点信息->主机名、信息->注释、传感器->压力\n基于适配器审查的调整",
         "uk": "змінити інтерфейс користувача на JSONConfig\nдодані точки даних info->hostname, info->note, sensor->pressure\nкоригування на основі огляду адаптера"
-      },
-      "0.0.6": {
-        "en": "bugfix wrong value type",
-        "de": "Bugfix falscher Werttyp",
-        "ru": "исправление ошибки неправильного типа значения",
-        "pt": "bug corrigido tipo de valor errado",
-        "nl": "bugfix verkeerde waarde type",
-        "fr": "correction de bogue type de valeur incorrect",
-        "it": "bugfix tipo di valore errato",
-        "es": "corrección de errores tipo de valor incorrecto",
-        "pl": "poprawka błędu zły typ wartości",
-        "zh-cn": "错误修正错误的值类型",
-        "uk": "виправлено неправильний тип значення"
       }
     },
     "titleLang": {
