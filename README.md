@@ -33,7 +33,7 @@ Fill the IP and have fun :)
 
 **WORK IN PROGRESS**
 
--   (o0Shojo0o) "Blocked" area for Icons when sending `pixelit.0.message`
+-   (o0Shojo0o) fixed "Blocked" area for Icons when sending `pixelit.0.message`
 
 ### 1.1.1 (2023-07-28)
 
