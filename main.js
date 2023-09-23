@@ -254,19 +254,36 @@ async function createSimpleMessage(input) {
 
     if (countElements == 1) {
         data = await getTextJson(inputArray[0]);
+        data.text.position = { x: 0, y: 1 };
     }
     if (countElements >= 2) {
         data = await getTextJson(inputArray[0], inputArray[1]);
+        data.text.position = { x: 0, y: 1 };
     }
     if (countElements == 3) {
         const webBmp = await getBMPArray(inputArray[2]);
+        data.text.position = { x: webBmp.sizeX, y: 1 };
 
-        data.bitmapAnimation = {
-            data: webBmp,
-            animationDelay: 200,
-            rubberbanding: false,
-            limitLoops: 0
-        };
+        if (webBmp.animated == true) {
+            data.bitmapAnimation = {
+                data: webBmp.rgB565Array,
+                animationDelay: 200,
+                rubberbanding: false,
+                limitLoops: 0
+            };
+        } else {
+            data.bitmap = {
+                data: webBmp.rgB565Array,
+                position: {
+                    x: 0,
+                    y: 0
+                },
+                size: {
+                    width: webBmp.sizeX,
+                    height: webBmp.sizeY
+                }
+            }
+        }
     }
 
     adapter.log.debug(`createSimpleMessage-> idata:${JSON.stringify(data)}`);
@@ -343,11 +360,7 @@ async function getTextJson(text, rgb) {
             bigFont: false,
             scrollText: 'auto',
             scrollTextDelay: 50,
-            centerText: false,
-            position: {
-                x: 8,
-                y: 1
-            },
+            centerText: true,
             color: {
                 r: rgb[0],
                 g: rgb[1],
@@ -360,8 +373,12 @@ async function getTextJson(text, rgb) {
 }
 
 async function getBMPArray(id) {
-    let webBmp = [[64512, 0, 0, 0, 0, 0, 0, 64512, 0, 64512, 0, 0, 0, 0, 64512, 0, 0, 0, 64512, 0, 0, 64512, 0, 0, 0, 0, 0, 64512, 64512, 0, 0, 0, 0, 0, 0, 64512, 64512, 0, 0, 0, 0, 0, 64512, 0, 0, 64512, 0, 0, 0, 64512, 0, 0, 0, 0, 64512, 0, 64512, 0, 0, 0, 0, 0, 0, 64512]];
-
+    let webBmp = {
+        rgB565Array: [64512, 0, 0, 0, 0, 0, 0, 64512, 0, 64512, 0, 0, 0, 0, 64512, 0, 0, 0, 64512, 0, 0, 64512, 0, 0, 0, 0, 0, 64512, 64512, 0, 0, 0, 0, 0, 0, 64512, 64512, 0, 0, 0, 0, 0, 64512, 0, 0, 64512, 0, 0, 0, 64512, 0, 0, 0, 0, 64512, 0, 64512, 0, 0, 0, 0, 0, 0, 64512],
+        sizeX: 8,
+        sizey: 8,
+        animated: false,
+    }
     // Check if id is cached
     if (bmpCache[id]) {
         adapter.log.debug(`Get BMP ${id} from cache`)
@@ -375,7 +392,18 @@ async function getBMPArray(id) {
             let response = await axios.get(`${apiURL}${id}`, axiosConfigToPixelIt);
 
             if (response.data && response.data.id && response.data.id != 0) {
-                webBmp = JSON.parse(`[${response.data.rgB565Array}]`);
+                webBmp = {
+                    sizeX: response.data.sizeX,
+                    sizeY: response.data.sizeY,
+                    animated: response.data.animated,
+                };
+
+                if (webBmp.animated == true) {
+                    webBmp.rgB565Array = JSON.parse(`[${response.data.rgB565Array}]`);
+                } else {
+                    webBmp.rgB565Array = JSON.parse(response.data.rgB565Array);
+                }
+
                 // Add id to cache
                 bmpCache[id] = webBmp;
             }
