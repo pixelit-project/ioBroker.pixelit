@@ -30,8 +30,7 @@ Fill the IP and have fun :)
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-
-**WORK IN PROGRESS**
+### 1.1.2 (2023-09-24)
 
 -   (o0Shojo0o) fixed "Blocked" area for Icons when sending `pixelit.0.message`
 
