@@ -120,6 +120,9 @@ class PixelIt extends utils.Adapter {
         let data;
 
         switch (id) {
+            case `${adapter.namespace}.show_clock`:
+                data = { clock: {} };
+                break;
             case `${adapter.namespace}.message`:
                 data = await createSimpleMessage(state.val);
                 break;
