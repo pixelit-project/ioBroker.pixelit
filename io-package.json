@@ -130,7 +130,10 @@
       "matrix array"
     ],
     "logTransporter": true,
-    "license": "MIT",
+    "licenseInformation": {
+      "license": "MIT",
+      "type": "free"
+    },
     "platform": "Javascript/Node.js",
     "main": "main.js",
     "icon": "pixelit.png",
@@ -144,6 +147,7 @@
     "readme": "https://github.com/pixelit-project/ioBroker.pixelit/blob/master/README.md",
     "loglevel": "info",
     "mode": "daemon",
+    "tier": 2,
     "type": "hardware",
     "compact": true,
     "connectionType": "local",
