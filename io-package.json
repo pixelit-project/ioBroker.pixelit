@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "pixelit",
-    "version": "1.1.3",
+    "version": "1.1.4",
     "news": {
+      "1.1.4": {
+        "en": "update dependencies [[#631](https://github.com/pixelit-project/ioBroker.pixelit/issues/631)]",
+        "de": "aktualisierung der Abhängigkeiten [[#631](https://github.com/pixelit-project/ioBroker.pixelit/issues/631)]",
+        "ru": "обновление зависимостей [[#631] (https://github.com/Picit-project/ioBroker. Pixelit/issues/631)]",
+        "pt": "dependências de atualização [[#631](https://github.com/pixelit-project/ioBroker.pixelit/issues/631)]",
+        "nl": "update afhankelijkheden [[#631](https://github.com/pixellit-project/ioBroker.pixelit/issues/631)]",
+        "fr": "mise à jour des dépendances [[#631](https://github.com/pixelit-project/ioBroker.pixelit/issues/631]",
+        "it": "aggiornare le dipendenze [[#631](https://github.com/pixelit-project/ioBroker.pixelit/issues/631)]",
+        "es": "[[#631](https://github.com/pixelit-project/ioBroker.pixelit/issues/631)]",
+        "pl": "w załączniku II wprowadza się następujące zmiany:",
+        "uk": "javaScript licenses API Веб-сайт Go1.13.8",
+        "zh-cn": "[#631] (https://github.com/pixelit-project/ioBroker.pixelit/issues/631) 更新依赖性"
+      },
       "1.1.3": {
         "en": "fixed `pixelit.x.show_clock` [[#521](https://github.com/pixelit-project/ioBroker.pixelit/issues/521)]",
         "de": "pixelit.x.show_clock [#521](https://github.com/pixelit-project/ioBroker.pixelit/issues/521)",
@@ -80,19 +93,6 @@
         "pl": "stan snu",
         "zh-cn": "增加睡觉",
         "uk": "додано стан sleep_mode"
-      },
-      "0.1.0": {
-        "en": "change conncetion to websocket\nadd buttons datapoints\nadd sensor gas datapoint",
-        "de": "konzession zu websocket ändern\nhinzufügen von buttons\nsensorgas-datenpunkt",
-        "ru": "изменить conncetion в websocket\nдобавить кнопки данных точек\nдобавьте датчик газовой точки",
-        "pt": "mudar de connceção para websocket\nadicionar botões datapoints\nadicionar datapoint do gás do sensor",
-        "nl": "veranderingsverbinding met websocket\nvoeg knopen toe\nvoeg sensorgas toe",
-        "fr": "changement de conncetion à websocket\najouter des boutons datapoints\najouter le point de données de gaz du capteur",
-        "it": "cambiare conncetion a websocket\naggiungere i punti dati dei pulsanti\naggiungere il datapoint del gas del sensore",
-        "es": "cambio de connceción a websocket\nañadir botones puntos de datos\nañadir datos de gas sensor",
-        "pl": "zmienianie się w stronę internetową\nprzycisk danych\ndostarczanie czujnego punktu danych sensora",
-        "zh-cn": "网站的改变\n增加但有数据点\n增加传感器数据",
-        "uk": "змінити підключення до websocket\nдодати точки даних кнопок\nдодати точку даних датчика газу"
       }
     },
     "titleLang": {
