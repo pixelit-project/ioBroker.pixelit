@@ -135,7 +135,6 @@
       "type": "free"
     },
     "platform": "Javascript/Node.js",
-    "main": "main.js",
     "icon": "pixelit.png",
     "enabled": true,
     "localLinks": {
@@ -152,7 +151,6 @@
     "compact": true,
     "connectionType": "local",
     "dataSource": "push",
-    "materialize": true,
     "dependencies": [
       {
         "js-controller": ">=5.0.19"
@@ -215,7 +213,8 @@
       }
     ],
     "adminUI": {
-      "config": "json"
+      "config": "json",
+      "tab": "materialize"
     },
     "adminTab": {
       "name": {
