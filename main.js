@@ -2,6 +2,7 @@
 
 const utils = require('@iobroker/adapter-core');
 const axios = require('axios');
+// @ts-ignore
 const WebSocket = require('ws');
 const adapterName = require('./package.json').name.split('.').pop();
 const dataPointsFolders = require('./lib/dataPointsFolders').dataPointsFolders;
@@ -21,7 +22,7 @@ const wsHeartbeatIntervall = 10000;
 const restartTimeout = 1000;
 const apiURL = 'https://pixelit.bastelbunker.de/API/GetBMPByID/';
 
-// Set axios Timeout 
+// Set axios Timeout
 const axiosConfigToPixelIt = {
     timeout: 3000,
     headers: {
@@ -48,11 +49,12 @@ class PixelIt extends utils.Adapter {
         adapter = this;
 
         // Get Config
+        // @ts-ignore
         pixelItAddress = this.config.ip;
 
         // Check Server address
         if (!pixelItAddress || pixelItAddress === '') {
-            this.log.warn('PixelIt address is not a valid, please check your settings!')
+            this.log.warn('PixelIt address is not a valid, please check your settings!');
             return;
         }
 
@@ -73,10 +75,10 @@ class PixelIt extends utils.Adapter {
         // Subscribe Brightness 255 DataPoint
         this.subscribeStates('brightness_255');
 
-        // Subscribe Show Clock Button 
+        // Subscribe Show Clock Button
         this.subscribeStates('show_clock');
 
-        // Subscribe Sleep Mode DataPoint 
+        // Subscribe Sleep Mode DataPoint
         this.subscribeStates('sleep_mode');
 
         // Start Websocket
@@ -101,7 +103,7 @@ class PixelIt extends utils.Adapter {
         this.log.debug(`onStateChange-> id:${id} state:${JSON.stringify(state)}`);
         let reMap;
 
-        // Ingore Message with ack=true 
+        // Ingore Message with ack=true
         if (!state || state.ack == true) {
             switch (id) {
                 case `${adapter.namespace}.brightness_255`:
@@ -146,12 +148,12 @@ class PixelIt extends utils.Adapter {
                 }
                 break;
             case `${adapter.namespace}.brightness`:
-                // Create reMap 
+                // Create reMap
                 reMap = createRemap(0, 100, 0, 255);
                 data = { brightness: reMap(state.val) };
                 break;
             case `${adapter.namespace}.brightness_255`:
-                // Create reMap 
+                // Create reMap
                 reMap = createRemap(0, 255, 0, 100);
                 data = { brightness: state.val };
                 break;
@@ -167,7 +169,7 @@ class PixelIt extends utils.Adapter {
 
             await axios.post('http://' + pixelItAddress + '/api/screen', data, axiosConfigToPixelIt);
             this.setStateChangedAsync(id, state.val, true);
-        } catch (err) { }
+        } catch (err) { /* empty */ }
     }
 
     async initWebsocket() {
@@ -265,9 +267,11 @@ async function createSimpleMessage(input) {
     }
     if (countElements == 3) {
         const webBmp = await getBMPArray(inputArray[2]);
+        // @ts-ignore
         data.text.position = { x: webBmp.sizeX, y: 1 };
 
         if (webBmp.animated == true) {
+            // @ts-ignore
             data.bitmapAnimation = {
                 data: webBmp.rgB565Array,
                 animationDelay: 200,
@@ -275,6 +279,7 @@ async function createSimpleMessage(input) {
                 limitLoops: 0
             };
         } else {
+            // @ts-ignore
             data.bitmap = {
                 data: webBmp.rgB565Array,
                 position: {
@@ -285,7 +290,7 @@ async function createSimpleMessage(input) {
                     width: webBmp.sizeX,
                     height: webBmp.sizeY
                 }
-            }
+            };
         }
     }
 
@@ -295,33 +300,33 @@ async function createSimpleMessage(input) {
 
 async function createFolderAndDataPoints() {
     // Create DataPoints Folders
-    for (let key in dataPointsFolders) {
+    for (const key in dataPointsFolders) {
         await adapter.setObjectNotExistsAsync(dataPointsFolders[key].pointName, dataPointsFolders[key].point);
-    };
+    }
 
-    // Create Root DataPoints       
-    for (let key in rootDataPoints) {
+    // Create Root DataPoints
+    for (const key in rootDataPoints) {
         await adapter.setObjectNotExistsAsync(rootDataPoints[key].pointName, rootDataPoints[key].point);
-    };
+    }
 
-    // Create Info DataPoints   
-    for (let key in infoDataPoints) {
+    // Create Info DataPoints
+    for (const key in infoDataPoints) {
         await adapter.setObjectNotExistsAsync(infoDataPoints[key].pointName, infoDataPoints[key].point);
-    };
+    }
 
-    // Create Sensor DataPoints       
-    for (let key in sensorDataPoints) {
+    // Create Sensor DataPoints
+    for (const key in sensorDataPoints) {
         await adapter.setObjectNotExistsAsync(sensorDataPoints[key].pointName, sensorDataPoints[key].point);
-    };
+    }
 
-    // Create Button DataPoints       
-    for (let key in buttonsDataPoints) {
+    // Create Button DataPoints
+    for (const key in buttonsDataPoints) {
         await adapter.setObjectNotExistsAsync(buttonsDataPoints[key].pointName, buttonsDataPoints[key].point);
-    };
+    }
 }
 
 async function setDataPoints(msgObj) {
-    for (let key in msgObj) {
+    for (const key in msgObj) {
         let dataPoint = infoDataPoints.find(x => x.msgObjName === key);
 
         if (!dataPoint) {
@@ -338,7 +343,7 @@ async function setDataPoints(msgObj) {
 
         if (dataPoint) {
             if (['lux', 'wifiRSSI', 'wifiQuality', 'pressure'].indexOf(key) >= 0) {
-                if (typeof value == 'number') {
+                if (typeof msgObj[key] == 'number') {
                     msgObj[key] = Math.round(Number(msgObj[key]));
                 }
             }
@@ -381,20 +386,21 @@ async function getBMPArray(id) {
         sizeX: 8,
         sizey: 8,
         animated: false,
-    }
+    };
     // Check if id is cached
     if (bmpCache[id]) {
-        adapter.log.debug(`Get BMP ${id} from cache`)
+        adapter.log.debug(`Get BMP ${id} from cache`);
         // Get id from cache
         webBmp = bmpCache[id];
     } else {
-        adapter.log.debug(`Get BMP ${id} from API`)
+        adapter.log.debug(`Get BMP ${id} from API`);
 
         try {
             // Get id from API
-            let response = await axios.get(`${apiURL}${id}`, axiosConfigToPixelIt);
+            const response = await axios.get(`${apiURL}${id}`, axiosConfigToPixelIt);
 
             if (response.data && response.data.id && response.data.id != 0) {
+                // @ts-ignore
                 webBmp = {
                     sizeX: response.data.sizeX,
                     sizeY: response.data.sizeY,
@@ -412,7 +418,7 @@ async function getBMPArray(id) {
             }
 
         } catch (err) {
-            adapter.log.error(err)
+            adapter.log.error(err);
         }
     }
 
@@ -433,6 +439,7 @@ function createRemap(inMin, inMax, outMin, outMax) {
     };
 }
 
+// @ts-ignore
 if (module.parent) {
     module.exports = (options) => new PixelIt(options);
 } else {
