@@ -229,8 +229,7 @@
         "pl": "PixelIt",
         "zh-cn": "PixelIt"
       },
-      "link": "http://%ip%",
-      "fa-icon": "</i><img style='width:24px;margin-bottom:-6px;' src='/adapter/pixelit/pixelit.png'><i>"
+      "link": "http://%ip%"
     }
   },
   "native": {
