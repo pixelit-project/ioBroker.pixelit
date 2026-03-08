@@ -21,6 +21,9 @@ Fill the IP and have fun :)
 
 ## Changelog
 
+### **WORK IN PROGRESS**
+- (iobroker-bot) Adapter requires node.js >= 20 now.
+
 <!--
  https://github.com/AlCalzone/release-script#usage
     npm run release major -- -p iobroker license --all 0.9.8 -> 1.0.0
