@@ -107,6 +107,8 @@ Fill the IP and have fun :)
 
 -   (o0shojo0o) initial push
 
+[Older changelogs can be found there](CHANGELOG_OLD.md)
+
 ## License
 
 MIT License
