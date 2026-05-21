@@ -22,6 +22,7 @@ Fill the IP and have fun :)
 ## Changelog
 
 ### **WORK IN PROGRESS**
+- (ioBroker-Bot) Adapter requires js-controller >= 6.0.11 now.
 - (iobroker-bot) Adapter requires node.js >= 20 now.
 
 <!--
