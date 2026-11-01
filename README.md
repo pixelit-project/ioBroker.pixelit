@@ -14,6 +14,15 @@ This adapter allows you to send from ioBroker Screen to [PixelIt](https://github
 There are also data points for the optional sensors of [PixelIt](https://github.com/pixelit-project/PixelIt), as well as the API of the [Pixel Gallery](https://pixelit.bastelbunker.de/PixelGallery) is implemented in the adapter.  
 More information about the data points can be found in this [documentation](https://pixelit-project.github.io/iobroker.html).
 
+## Requirements
+
+- Node.js 22.19.0 or newer (CI tests Node.js 22 and 24)
+- ioBroker js-controller 6.0.11 or newer
+- ioBroker admin 7.6.20 or newer
+- PixelIt firmware 2.1.3 or newer
+
+See the [maintenance report](docs/maintenance.md) for the open issue review, validation and remaining external setup.
+
 ## Configuration
 
 Create a new instance of the adapter
@@ -22,7 +31,11 @@ Fill the IP and have fun :)
 ## Changelog
 
 ### **WORK IN PROGRESS**
-- (iobroker-bot) Adapter requires node.js >= 20 now.
+- (o0Shojo0o) Require Node.js >= 22.19.0, js-controller >= 6.0.11 and admin >= 7.6.20.
+- (o0Shojo0o) Update runtime, testing and release dependencies; align Node.js types and TypeScript configuration.
+- (o0Shojo0o) Migrate to the shared ioBroker ESLint configuration and make the admin configuration responsive.
+- (o0Shojo0o) Add Dependabot cooldown and Node.js type safeguards; run CodeQL on the master branch.
+- (o0Shojo0o) Fix deleted brightness states, extended bitmap/animation IDs and fallback bitmap height; add command regression tests.
 
 <!--
  https://github.com/AlCalzone/release-script#usage
