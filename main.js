@@ -2,7 +2,6 @@
 
 const utils = require('@iobroker/adapter-core');
 const axios = require('axios');
-// @ts-ignore
 const WebSocket = require('ws');
 const adapterName = require('./package.json').name.split('.').pop();
 const dataPointsFolders = require('./lib/dataPointsFolders').dataPointsFolders;
@@ -26,14 +25,13 @@ const apiURL = 'https://pixelit.bastelbunker.de/API/GetBMPByID/';
 const axiosConfigToPixelIt = {
     timeout: 3000,
     headers: {
-        'User-Agent': 'ioBroker_PixelIt'
-    }
+        'User-Agent': 'ioBroker_PixelIt',
+    },
 };
 // Init BMPCache
 const bmpCache = [];
 
 class PixelIt extends utils.Adapter {
-
     constructor(options) {
         super({
             ...options,
@@ -46,10 +44,11 @@ class PixelIt extends utils.Adapter {
     }
 
     async onReady() {
+        // Helpers share the adapter instance in this legacy module.
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
         adapter = this;
 
         // Get Config
-        // @ts-ignore
         pixelItAddress = this.config.ip;
 
         // Check Server address
@@ -94,7 +93,7 @@ class PixelIt extends utils.Adapter {
             // Reset adapter connection
             this.setState('info.connection', false, true);
             callback();
-        } catch (ex) {
+        } catch {
             callback();
         }
     }
@@ -103,8 +102,12 @@ class PixelIt extends utils.Adapter {
         this.log.debug(`onStateChange-> id:${id} state:${JSON.stringify(state)}`);
         let reMap;
 
-        // Ingore Message with ack=true
-        if (!state || state.ack == true) {
+        if (!state) {
+            return;
+        }
+
+        // Synchronize acknowledged brightness values without sending them again.
+        if (state.ack == true) {
             switch (id) {
                 case `${adapter.namespace}.brightness_255`:
                     reMap = createRemap(0, 255, 0, 100);
@@ -134,15 +137,15 @@ class PixelIt extends utils.Adapter {
                     if (data.bitmap && data.bitmap.data) {
                         // If only a BMP Id is passed, the BMP Array must be retrieved via API
                         if (typeof data.bitmap.data == 'number') {
-                            data.bitmap.data = (await getBMPArray(data.bitmap.data))[0];
+                            data.bitmap.data = (await getBMPArray(data.bitmap.data)).rgB565Array;
                         }
                     } else if (data.bitmapAnimation && data.bitmapAnimation.data) {
                         // If only a BMP Id is passed, the BMP Array must be retrieved via API
                         if (typeof data.bitmapAnimation.data == 'number') {
-                            data.bitmapAnimation.data = await getBMPArray(data.bitmapAnimation.data);
+                            data.bitmapAnimation.data = (await getBMPArray(data.bitmapAnimation.data)).rgB565Array;
                         }
                     }
-                } catch (err) {
+                } catch {
                     this.log.warn(`Cannot parse JSON from ext_message... ${state.val}`);
                     return;
                 }
@@ -160,16 +163,18 @@ class PixelIt extends utils.Adapter {
             case `${adapter.namespace}.sleep_mode`:
                 data = { sleepMode: state.val };
                 break;
-
+            default:
+                return;
         }
 
         this.log.debug(`Send message --->: ${JSON.stringify(data)}`);
 
         try {
-
-            await axios.post('http://' + pixelItAddress + '/api/screen', data, axiosConfigToPixelIt);
+            await axios.post(`http://${pixelItAddress}/api/screen`, data, axiosConfigToPixelIt);
             this.setStateChangedAsync(id, state.val, true);
-        } catch (err) { /* empty */ }
+        } catch {
+            /* empty */
+        }
     }
 
     async initWebsocket() {
@@ -177,9 +182,9 @@ class PixelIt extends utils.Adapter {
         ws = new WebSocket(`ws://${pixelItAddress}:81`);
 
         // On error
-        ws.on('error', (err) => {
+        ws.on('error', err => {
             if (!err.message.includes('ETIMEDOUT') && !err.message.includes('EHOSTUNREACH')) {
-                this.log.warn(err);
+                this.log.warn(err.message);
             }
         });
 
@@ -196,9 +201,9 @@ class PixelIt extends utils.Adapter {
         });
 
         // Incomming messages
-        ws.on('message', async (message) => {
+        ws.on('message', async message => {
             this.log.debug(`Incomming message <---: ${message}`);
-            const obj = JSON.parse(message);
+            const obj = JSON.parse(message.toString());
             const objName = Object.keys(obj)[0];
             // No Logs
             if (objName != 'log') {
@@ -250,46 +255,35 @@ class PixelIt extends utils.Adapter {
 }
 
 async function createSimpleMessage(input) {
-
     const inputArray = input.split(';');
     // 1 = text, 2 = text + text color, 3 = text + text color + image
     const countElements = inputArray.length;
 
-    let data;
+    const data = await getTextJson(inputArray[0], inputArray[1]);
+    data.text.position = { x: 0, y: 1 };
 
-    if (countElements == 1) {
-        data = await getTextJson(inputArray[0]);
-        data.text.position = { x: 0, y: 1 };
-    }
-    if (countElements >= 2) {
-        data = await getTextJson(inputArray[0], inputArray[1]);
-        data.text.position = { x: 0, y: 1 };
-    }
     if (countElements == 3) {
         const webBmp = await getBMPArray(inputArray[2]);
-        // @ts-ignore
         data.text.position = { x: webBmp.sizeX, y: 1 };
 
         if (webBmp.animated == true) {
-            // @ts-ignore
             data.bitmapAnimation = {
                 data: webBmp.rgB565Array,
                 animationDelay: 200,
                 rubberbanding: false,
-                limitLoops: 0
+                limitLoops: 0,
             };
         } else {
-            // @ts-ignore
             data.bitmap = {
                 data: webBmp.rgB565Array,
                 position: {
                     x: 0,
-                    y: 0
+                    y: 0,
                 },
                 size: {
                     width: webBmp.sizeX,
-                    height: webBmp.sizeY
-                }
+                    height: webBmp.sizeY,
+                },
             };
         }
     }
@@ -349,7 +343,7 @@ async function setDataPoints(msgObj) {
             }
             adapter.setStateChangedAsync(dataPoint.pointName, {
                 val: msgObj[key],
-                ack: true
+                ack: true,
             });
         }
     }
@@ -372,9 +366,9 @@ async function getTextJson(text, rgb) {
             color: {
                 r: rgb[0],
                 g: rgb[1],
-                b: rgb[2]
-            }
-        }
+                b: rgb[2],
+            },
+        },
     };
 
     return data;
@@ -382,9 +376,13 @@ async function getTextJson(text, rgb) {
 
 async function getBMPArray(id) {
     let webBmp = {
-        rgB565Array: [64512, 0, 0, 0, 0, 0, 0, 64512, 0, 64512, 0, 0, 0, 0, 64512, 0, 0, 0, 64512, 0, 0, 64512, 0, 0, 0, 0, 0, 64512, 64512, 0, 0, 0, 0, 0, 0, 64512, 64512, 0, 0, 0, 0, 0, 64512, 0, 0, 64512, 0, 0, 0, 64512, 0, 0, 0, 0, 64512, 0, 64512, 0, 0, 0, 0, 0, 0, 64512],
+        rgB565Array: [
+            64512, 0, 0, 0, 0, 0, 0, 64512, 0, 64512, 0, 0, 0, 0, 64512, 0, 0, 0, 64512, 0, 0, 64512, 0, 0, 0, 0, 0,
+            64512, 64512, 0, 0, 0, 0, 0, 0, 64512, 64512, 0, 0, 0, 0, 0, 64512, 0, 0, 64512, 0, 0, 0, 64512, 0, 0, 0, 0,
+            64512, 0, 64512, 0, 0, 0, 0, 0, 0, 64512,
+        ],
         sizeX: 8,
-        sizey: 8,
+        sizeY: 8,
         animated: false,
     };
     // Check if id is cached
@@ -400,11 +398,11 @@ async function getBMPArray(id) {
             const response = await axios.get(`${apiURL}${id}`, axiosConfigToPixelIt);
 
             if (response.data && response.data.id && response.data.id != 0) {
-                // @ts-ignore
                 webBmp = {
                     sizeX: response.data.sizeX,
                     sizeY: response.data.sizeY,
                     animated: response.data.animated,
+                    rgB565Array: [],
                 };
 
                 if (webBmp.animated == true) {
@@ -416,7 +414,6 @@ async function getBMPArray(id) {
                 // Add id to cache
                 bmpCache[id] = webBmp;
             }
-
         } catch (err) {
             adapter.log.error(err);
         }
@@ -427,21 +424,21 @@ async function getBMPArray(id) {
 
 /**
  * Create a function that maps a value to a range
- * @param {Number} inMin Input range minimun value
- * @param {Number} inMax Input range maximun value
- * @param {Number} outMin Output range minimun value
- * @param {Number} outMax Output range maximun value
- * @return {function} A function that converts a value
+ *
+ * @param {number} inMin Input range minimun value
+ * @param {number} inMax Input range maximun value
+ * @param {number} outMin Output range minimun value
+ * @param {number} outMax Output range maximun value
+ * @returns {(x: number) => number} A function that converts a value
  */
 function createRemap(inMin, inMax, outMin, outMax) {
     return function remaper(x) {
-        return Number(((x - inMin) * (outMax - outMin) / (inMax - inMin) + outMin).toFixed());
+        return Number((((x - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin).toFixed());
     };
 }
 
-// @ts-ignore
-if (module.parent) {
-    module.exports = (options) => new PixelIt(options);
+if (require.main !== module) {
+    module.exports = options => new PixelIt(options);
 } else {
     new PixelIt();
 }
